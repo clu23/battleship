@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "",
+  "main": "jest.config.js",
+  "author": "clu23",
+  "type": "module",
+  "license": "ISC"
+}
