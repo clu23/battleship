@@ -26,6 +26,10 @@ class Ship{
     getName(){
         return(this.name)
     }
+
+    getSize(){
+        return(this.size)
+    }
 }
 
 export default Ship
