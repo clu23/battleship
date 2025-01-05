@@ -19,7 +19,23 @@ class GameBoard{
         }
     }
 
-    placeShip(ship,row,column){
+    placeShip(ship,row,column,placementMode){
+        if (!this.isPlacementPossible(ship, row, column, placementMode)){
+            return false
+        }
+        
+        if(placementMode==='Y'){
+            for(let i=0;i<ship.size;i++){
+                this.board[row+i][column]=ship
+            }
+        }
+        else{
+            for(let i=0;i<ship.size;i++){
+                this.board[row][column+i]=ship
+            } 
+        }
+
+        return true
 
     }
 
@@ -39,6 +55,49 @@ class GameBoard{
         }
 
         // case any of the fields is already taken
+        if (placementMode==='Y') {
+            for (let i = 0; i < ship.size; i++) {
+              if (this.board[row + i][column]!='x') return false
+            }
+          } else {
+            for (let i = 0; i < ship.size; i++) {
+              if (this.board[row][column + i]!='x') return false
+            }
+          }
 
+        
+        // case any of the neighbour fields are already taken, the user is not allowed to place ships that are in contact with one another (a clear message should be displayed)
+        if (placementMode==='Y') {
+            for (let i = 0; i < ship.size; i++) {
+            for (let x = -1; x <= 1; x++) {
+                for (let y = -1; y <= 1; y++) {
+                if (
+                    row + x + i < 0 ||
+                    row + x + i >= SIZE ||
+                    column + y < 0 ||
+                    column + y >= SIZE
+                )
+                    continue
+                if (this.board[row + x + i][column + y]!='x') return false
+                }
+            }
+            }
+        } else {
+            for (let i = 0; i < ship.size; i++) {
+            for (let x = -1; x <= 1; x++) {
+                for (let y = -1; y <= 1; y++) {
+                if (
+                    row + x < 0 ||
+                    row + x >= SIZE ||
+                    column + y + i < 0 ||
+                    column + y + i >= SIZE
+                )
+                    continue
+                if (this.board[row + x][column + y + i]!='x') return false
+                }
+            }
+            }
+        }
+        return true
     }
 }
