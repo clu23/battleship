@@ -6,6 +6,7 @@ const SIZE = 10
 class GameBoard{
     constructor(){
         this.board=new Array(SIZE).fill('x').map(() => new Array(SIZE).fill('x'));
+        this.missedShots=new Array(SIZE).fill(false).map(() => new Array(SIZE).fill(false));
         this.placeMode="X";
         this.fleet=[];
     }
@@ -34,9 +35,37 @@ class GameBoard{
                 this.board[row][column+i]=ship
             } 
         }
-
+        this.fleet.push(ship);
         return true
 
+    }
+
+    //A function to place ships randomly, for it to work the user must not have place any ship yet
+    placeShipsRandomly(){
+        if(this.fleet.length>0){
+            return
+        }
+
+        const ships = []
+        const carrier = new Ship(5,"carrier")
+        const battleship = new Ship(4,"battleship")
+        const destroyer = new Ship(3,"destroyer")
+        const submarine = new Ship(3,"submarine")
+        const patrolBoat = new Ship(2,"patrolBoat")
+        ships.push(carrier, battleship, destroyer, submarine, patrolBoat)
+
+        let succesfulPlacements = 0
+
+        while (succesfulPlacements < 5) {
+            const row = Math.floor(Math.random() * 10)
+            const column = Math.floor(Math.random() * 10)
+            const placementMode = ('XY').split('')[(Math.floor(Math.random() * 2 ))]
+      
+            if (this.placeShip(ships[succesfulPlacements], row, column, placementMode)){
+                succesfulPlacements++
+            }
+              
+          }
     }
 
     isPlacementPossible(ship,row,column,placementMode){
@@ -101,3 +130,6 @@ class GameBoard{
         return true
     }
 }
+
+
+
