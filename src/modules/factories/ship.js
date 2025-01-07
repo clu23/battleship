@@ -8,14 +8,11 @@ class Ship{
         this.sunk=false;
     }
 
-    sunk(){
-        this.sunk=true;
-    }
 
     hit(){
         this.hits+=1;
-        if (this.hits===this.length){
-            this.sunk();
+        if (this.hits===this.size){
+            this.sunk = true;
         }
     }
 

@@ -40,7 +40,7 @@ class GameBoard{
 
     }
 
-    //A function to place ships randomly, for it to work the user must not have place any ship yet
+    //A function to place ships randomly, either for placing computer ships or placing the player ships' automatically (he must not have place any ship yet for it to work)
     placeShipsRandomly(){
         if(this.fleet.length>0){
             return
@@ -129,7 +129,76 @@ class GameBoard{
         }
         return true
     }
+
+
+    //This function handles the hits from the opponent
+    takeHit(row,column){
+        if (row < 0 || row >= SIZE || column < 0 || column >= SIZE) {
+            return false
+          }
+
+        if (this.board[row][column]!='x'){
+            this.board[row][column].hit();
+            this.board[row][column]='o';
+            return true
+        }
+        else{
+            this.board[row][column]='o';
+            this.missedShots[row][column]=true;
+            return false 
+        }
+
+    }
+
+    //This function checks for sunk ships in the fleet, if one is found, it returns true, else it returns false
+    checkSunk(){
+        for(let i = 0; i < this.fleet.length; i++){
+            if (this.fleet[i].sunk==true){
+                return(true)
+            }
+        }
+        return(false)
+    }
+
+    //This function removes the first sunked ship found from the fleet and returns it
+    removeSunked(){
+        for(let i = 0; i < this.fleet.length; i++){
+            if (this.fleet[i].sunk==true){
+                let sunkedShip=this.fleet[i];
+                this.fleet=this.fleet.splice(i+1,1);
+                return(sunkedShip)
+            } 
+        }
+    }
 }
+
+
+//testing function takeHit
+
+let test_gameboard= new GameBoard();
+
+const destroyer = new Ship(3,"destroyer");
+const submarine = new Ship(3,"submarine");
+
+test_gameboard.placeShip(destroyer,2,3,'X');
+test_gameboard.placeShip(submarine,4,5,'Y')
+
+console.log(test_gameboard.board)
+
+test_gameboard.takeHit(2,3);
+test_gameboard.takeHit(2,4);
+test_gameboard.takeHit(2,5);
+test_gameboard.takeHit(2,6);
+
+console.log(test_gameboard.fleet)
+
+console.log(test_gameboard.checkSunk());
+
+test_gameboard.removeSunked();
+
+console.log(test_gameboard.fleet)
+console.log(test_gameboard.missedShots)
+
 
 
 
