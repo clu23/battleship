@@ -160,18 +160,39 @@ class GameBoard{
         return(false)
     }
 
-    //This function removes the first sunked ship found from the fleet and returns it
-    removeSunked(){
-        for(let i = 0; i < this.fleet.length; i++){
-            if (this.fleet[i].sunk==true){
-                let sunkedShip=this.fleet[i];
-                this.fleet=this.fleet.splice(i+1,1);
-                return(sunkedShip)
-            } 
+    //This function checks if all the ships have been sunked
+    isGameOver() {
+        let isBoardEmpty = true
+        for (let i = 0; i < SIZE; i++) {
+          for (let j = 0; j < SIZE; j++) {
+            if (this.board[i][j]!=='x') {
+              isBoardEmpty = false
+              if (!this.board[i][j].isSunk()) {
+                return false
+              }
+            }
+          }
         }
-    }
+
+        if (isBoardEmpty){
+            return (false)
+        }
+        else{
+            return(true)
+        }
+      }
+
+      isEmpty() {
+        for (let i = 0; i < SIZE; i++) {
+          for (let j = 0; j < SIZE; j++) {
+            if (this.board[i][j] !== 'x') return false
+          }
+        }
+        return true
+      }
 }
 
+export default GameBoard
 
 //testing function takeHit
 
@@ -194,10 +215,7 @@ console.log(test_gameboard.fleet)
 
 console.log(test_gameboard.checkSunk());
 
-test_gameboard.removeSunked();
 
-console.log(test_gameboard.fleet)
-console.log(test_gameboard.missedShots)
 
 
 
