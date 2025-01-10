@@ -1,5 +1,5 @@
 
-import Ship from './ship.js'
+const Ship = require('./ship')
 
 const SIZE = 10
 
@@ -192,7 +192,8 @@ class GameBoard{
       }
 }
 
-export default GameBoard
+module.exports=GameBoard
+
 
 //testing function takeHit
 
