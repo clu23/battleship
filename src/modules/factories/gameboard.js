@@ -162,24 +162,17 @@ class GameBoard{
 
     //This function checks if all the ships have been sunked
     isGameOver() {
-        let isBoardEmpty = true
-        for (let i = 0; i < SIZE; i++) {
-          for (let j = 0; j < SIZE; j++) {
-            if (this.board[i][j]!=='x') {
-              isBoardEmpty = false
-              if (!this.board[i][j].isSunk()) {
-                return false
-              }
-            }
-          }
-        }
-
-        if (isBoardEmpty){
-            return (false)
+        if (this.fleet.length==0){
+            return(false)
         }
         else{
-            return(true)
+            for(let i=0; i<this.fleet.length; i++){
+                if (!this.fleet[i].isSunk()){
+                    return(false)
+                }
+            }
         }
+        return(true)
       }
 
       isEmpty() {
@@ -214,7 +207,7 @@ test_gameboard.takeHit(2,6);
 
 console.log(test_gameboard.fleet)
 
-console.log(test_gameboard.checkSunk());
+console.log(test_gameboard.isGameOver());
 
 
 

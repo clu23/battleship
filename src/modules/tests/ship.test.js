@@ -17,4 +17,23 @@ describe("Ship", () => {
         expect(ship.hits).toEqual(1)
     })
 
+    test('get the name', () =>{
+        expect(ship.getName()).toEqual("test_ship")
+    })
+
+    test('get the size', () =>{
+        expect(ship.getSize()).toEqual(3)
+    })
+
+    test('get the size', () =>{
+        expect(ship.getSize()).toEqual(3)
+    })
+
+    test('sinks', () => {
+        ship.hit()
+        ship.hit()
+        ship.hit()
+        expect(ship.isSunk()).toBe(true)
+      })
+
   });
