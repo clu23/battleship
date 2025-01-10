@@ -10,6 +10,5 @@
   "description": "",
   "main": "jest.config.js",
   "author": "clu23",
-  "type": "module",
   "license": "ISC"
 }
