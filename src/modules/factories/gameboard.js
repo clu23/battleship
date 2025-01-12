@@ -1,7 +1,7 @@
 
 const Ship = require('./ship')
 
-const SIZE = 10
+const SIZE = 10;
 
 class GameBoard{
     constructor(){
@@ -183,13 +183,26 @@ class GameBoard{
         }
         return true
       }
+
+      //this function returns the number of free cells in the gameboard, written in order to test placeShipsRandomly function
+      getFreeCells(){
+        let counter=100;
+        for (let i=0; i < SIZE; i++){
+            for (let j=0; j < SIZE; j++){
+                if (this.board[i][j]!=='x'){
+                    counter=counter-1;
+                }
+            }
+        }
+        return(counter)
+      }
 }
 
 module.exports=GameBoard
 
 
 //testing function takeHit
-
+/*
 let test_gameboard= new GameBoard();
 
 const destroyer = new Ship(3,"destroyer");
@@ -208,7 +221,7 @@ test_gameboard.takeHit(2,6);
 console.log(test_gameboard.fleet)
 
 console.log(test_gameboard.isGameOver());
-
+*/
 
 
 

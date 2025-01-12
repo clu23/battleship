@@ -25,10 +25,6 @@ describe("Ship", () => {
         expect(ship.getSize()).toEqual(3)
     })
 
-    test('get the size', () =>{
-        expect(ship.getSize()).toEqual(3)
-    })
-
     test('sinks', () => {
         ship.hit()
         ship.hit()
