@@ -70,6 +70,14 @@ describe("Gameboard", () => {
         expect(gameboard.isPlacementPossible(ship, 1, 3, 'Y')).toBe(false)
     })
 
+    test('prevent ship placement in direct neighbourhood of taken fields', () => {
+        gameboard.placeShip(ship,1,1,'X')
+        expect(gameboard.isPlacementPossible(ship, 0, 0, 'X')).toBe(false)
+        expect(gameboard.isPlacementPossible(ship, 2, 1, 'X')).toBe(false)
+        expect(gameboard.isPlacementPossible(ship, 1, 4, 'Y')).toBe(false)
+        expect(gameboard.isPlacementPossible(ship, 3, 3, 'Y')).toBe(true)
+    })
+
     test('receive attacks', () => {
         gameboard.placeShip(ship, 1, 1, 'X')
         gameboard.takeHit(1, 3)
@@ -97,7 +105,7 @@ describe("Gameboard", () => {
         gameboard.takeHit(5, 6)
         gameboard.takeHit(5, 7)
         expect(gameboard.isGameOver()).toBe(true)
-      })
+    })
 
   });
 

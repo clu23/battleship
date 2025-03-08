@@ -175,6 +175,7 @@ class GameBoard{
         return(true)
       }
 
+      //This function checks if the board is empty (ie has no ships and no shots fired)
       isEmpty() {
         for (let i = 0; i < SIZE; i++) {
           for (let j = 0; j < SIZE; j++) {
