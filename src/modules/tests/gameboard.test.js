@@ -77,11 +77,27 @@ describe("Gameboard", () => {
         expect(gameboard.board[1][1].hits).toBe(1)
     })
 
-    test('keeps track of missed shots', () => {
+    test('keep track of missed shots', () => {
         gameboard.placeShip(ship, 1, 1, 'X')
         gameboard.takeHit(1, 4)
         expect(gameboard.missedShots[1][4]).toBe(true)
     })
+
+    test('is game over', () => {
+        expect(gameboard.isGameOver()).toBe(false)
+    
+        gameboard.placeShip(ship, 1, 1, 'X')
+        expect(gameboard.isGameOver()).toBe(false)
+        gameboard.takeHit(1, 1)
+        gameboard.takeHit(1, 2)
+        gameboard.takeHit(1, 3)
+    
+        gameboard.placeShip(new Ship(3), 5, 5, 'X')
+        gameboard.takeHit(5, 5)
+        gameboard.takeHit(5, 6)
+        gameboard.takeHit(5, 7)
+        expect(gameboard.isGameOver()).toBe(true)
+      })
 
   });
 
