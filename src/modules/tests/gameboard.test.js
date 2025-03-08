@@ -65,8 +65,22 @@ describe("Gameboard", () => {
 
     test('prevent ship placement on taken fields', () => {
         gameboard.placeShip(ship,1,1,'X')
+        expect(gameboard.isPlacementPossible(ship, 1, 1, 'Y')).toBe(false)
         expect(gameboard.isPlacementPossible(ship, 1, 2, 'X')).toBe(false)
         expect(gameboard.isPlacementPossible(ship, 1, 3, 'Y')).toBe(false)
+    })
+
+    test('receive attacks', () => {
+        gameboard.placeShip(ship, 1, 1, 'X')
+        gameboard.takeHit(1, 3)
+        expect(gameboard.board[1][3]).toEqual('o')
+        expect(gameboard.board[1][1].hits).toBe(1)
+    })
+
+    test('keeps track of missed shots', () => {
+        gameboard.placeShip(ship, 1, 1, 'X')
+        gameboard.takeHit(1, 4)
+        expect(gameboard.missedShots[1][4]).toBe(true)
     })
 
   });

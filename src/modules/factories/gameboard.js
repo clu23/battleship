@@ -208,20 +208,17 @@ let test_gameboard= new GameBoard();
 const destroyer = new Ship(3,"destroyer");
 const submarine = new Ship(3,"submarine");
 
-test_gameboard.placeShip(destroyer,2,3,'X');
+test_gameboard.placeShip(destroyer,1,1,'X');
 test_gameboard.placeShip(submarine,4,5,'Y')
 
-console.log(test_gameboard.board)
 
-test_gameboard.takeHit(2,3);
-test_gameboard.takeHit(2,4);
-test_gameboard.takeHit(2,5);
-test_gameboard.takeHit(2,6);
 
-console.log(test_gameboard.fleet)
+test_gameboard.takeHit(1,3);
 
-console.log(test_gameboard.isGameOver());
+console.log(destroyer.hits)
 */
+
+
 
 
 
