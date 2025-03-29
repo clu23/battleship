@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Herr+Von+Muellerhoff&family=Montserrat:wght@300;400;700&display=swap");
+
+
+/* General */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:  sans-serif;
+    text-align: center;
+  }
+  
+
+  #header {
+    width: 100vw;
+    height: 10vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+
+  #content {
+    width: 100vw;
+    height: 90vh;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #content-left{
+    width: 50vw;
+    height: 90vh;
+    background: url("images/image_battleship_1.png");
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #content-right{
+    width: 50vw;
+    height: 90vh;
+    background: url("images/image_battleship_2.png");
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #welcome-screen{
+    width: 30vw;
+    height: 45vh;
+    position: absolute;
+    padding:10px;
+    z-index: 50;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(7, 19, 51, 0.98);
+    color: white;
+    border-radius: 10px;
+  }
+
+
+  p{
+    color: white;
+    font-size: 55px;
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+  }
