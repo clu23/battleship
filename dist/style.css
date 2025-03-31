@@ -23,14 +23,14 @@
 
   #content {
     width: 100vw;
-    height: 90vh;
+    height: 100vh;
     display: flex;
     justify-content: space-between;
   }
 
   #content-left{
     width: 50vw;
-    height: 90vh;
+    height: 100vh;
     background: url("images/image_battleship_1.png");
     background-size: cover;
     display: flex;
@@ -40,7 +40,7 @@
 
   #content-right{
     width: 50vw;
-    height: 90vh;
+    height: 100vh;
     background: url("images/image_battleship_2.png");
     background-size: cover;
     display: flex;
@@ -71,3 +71,36 @@
     text-align: center;
     text-transform: uppercase;
   }
+
+  input{
+    background-color:rgba(7, 19, 51, 0.98);
+    border: none;
+    margin-top: 40px;
+    font-size: 18px;
+    color:white;
+    border-bottom: solid white;
+    padding: 5px;
+  }
+
+
+  button {
+    font-size: 30px;
+    color: white;
+    background-color:rgba(19, 44, 116,1.0);
+    padding:10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius:10px;
+    margin-top:50px;
+  }
+
+
+  input::placeholder {
+    font-size: 18px;
+    color: rgb(214, 213, 213);
+    font-weight: 100;
+  }
+
+  input:focus{
+    outline: none;
+}
