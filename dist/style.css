@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Herr+Von+Muellerhoff&family=Montserrat:wght@300;400;700&display=swap");
 
 
@@ -31,7 +32,7 @@
   #content-left{
     width: 50vw;
     height: 100vh;
-    background: url("images/image_battleship_1.png");
+    background: url("../src/images/image_battleship_1.png");
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -41,7 +42,7 @@
   #content-right{
     width: 50vw;
     height: 100vh;
-    background: url("images/image_battleship_2.png");
+    background: url("../src/images/image_battleship_2.png");
     background-size: cover;
     display: flex;
     flex-direction: column;
