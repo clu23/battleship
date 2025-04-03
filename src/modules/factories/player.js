@@ -8,6 +8,11 @@ class Player{
         this.hitCoords=[]
     }
 
+
+    setName(newName){
+      this.name=newName;
+    }
+
     attack(x,y,gameboard){
         if (this.alreadyHit(x,y)){
             return

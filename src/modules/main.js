@@ -1,7 +1,10 @@
 const Sound = require('./utils/sound')
+const Display = require ('./DOM/display')
 
 
 
-const sound =new Sound();
+const sound = new Sound();
+const display = new Display();
 
-sound.BackgroundOnClick()
+sound.BackgroundOnClick();
+display.initPlayButton();
