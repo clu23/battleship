@@ -1,1 +1,1 @@
-"use strict";(self.webpackChunkbattleship=self.webpackChunkbattleship||[]).push([[527],{908:(e,p,s)=>{e.exports=s.p+"img/pirates68a38ae46f9680b5221c.mp3"}}]);
+"use strict";(self.webpackChunkbattleship=self.webpackChunkbattleship||[]).push([[527],{527:(e,p,s)=>{e.exports=s.p+"img/pirates68a38ae46f9680b5221c.mp3"}}]);

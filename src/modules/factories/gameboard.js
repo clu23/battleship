@@ -1,9 +1,11 @@
 
-const Ship = require('./ship')
+//const Ship = require('./ship')
+import Ship from './ship.js';
 
 const SIZE = 10;
 
-class GameBoard{
+
+class _GameBoard{
     constructor(){
         this.board=new Array(SIZE).fill('x').map(() => new Array(SIZE).fill('x'));
         this.missedShots=new Array(SIZE).fill(false).map(() => new Array(SIZE).fill(false));
@@ -199,11 +201,15 @@ class GameBoard{
       }
 }
 
-module.exports=GameBoard
+
+const GameBoard= new _GameBoard();
+export default GameBoard
+//module.exports=GameBoard
 
 
-//testing function takeHit
 /*
+//testing function takeHit
+
 let test_gameboard= new GameBoard();
 
 const destroyer = new Ship(3,"destroyer");
@@ -218,10 +224,3 @@ test_gameboard.takeHit(1,3);
 
 console.log(destroyer.hits)
 */
-
-
-
-
-
-
-

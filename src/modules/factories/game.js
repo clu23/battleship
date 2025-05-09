@@ -1,9 +1,9 @@
-const Player = require('./player')
+import Player from './player.js';
 
 
 
 
-class Game{
+class _Game{
     constructor(){
         this.player = new Player('Captain');
         this.computer = new Player('computer');
@@ -24,6 +24,6 @@ class Game{
     
 }
 
+const Game=new _Game();
 
-
-module.exports=Game
+export default Game

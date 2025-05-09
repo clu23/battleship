@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Herr+Von+Muellerhoff&family=Montserrat:wght@300;400;700&display=swap");
 
 
+
 /* General */
 
 * {
@@ -11,7 +12,23 @@
     font-family:  sans-serif;
     text-align: center;
   }
+
+  html {
+    min-height: 100vh;
+    height: -webkit-fill-available;
+  }
   
+  html,
+  body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available; 
+  }
+  
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+ 
 
   #header {
     width: 100vw;
@@ -29,10 +46,23 @@
     justify-content: space-between;
   }
 
+  .app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    min-height: 100vh;
+    height: -webkit-fill-available;
+    text-align: center;
+  }
+
+
+  
   #content-left{
     width: 50vw;
-    height: 100vh;
-    background: url("../src/images/image_battleship_1.png");
+    min-height: 100vh;
+    height: -webkit-fill-available;
+    background: url("../../src/images/image_battleship_1.png");
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -41,8 +71,9 @@
 
   #content-right{
     width: 50vw;
-    height: 100vh;
-    background: url("../src/images/image_battleship_2.png");
+    min-height: 100vh;
+    height: -webkit-fill-available;
+    background: url("../../src/images/image_battleship_2.png");
     background-size: cover;
     display: flex;
     flex-direction: column;

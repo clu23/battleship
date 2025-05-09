@@ -1,6 +1,6 @@
-const Game = require('../factories/game')
+import Game from '../factories/game.js';
 
-const game =new Game();
+
 
 
 class Display{
@@ -16,13 +16,11 @@ class Display{
     setPlayerName() {
         const name = document.getElementById('name').value.toString().trim()
         if (name) {
-            game.getPlayer().setName(`Captain ${name}`)
+            Game.getPlayer().setName(`Captain ${name}`)
         }
         console.log(name)
-        console.log(game.getPlayer())
     }
 
 }
 
-
-module.exports=Display
+export default Display

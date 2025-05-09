@@ -3,10 +3,34 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Asset Management</title>
-    <link type="text/css" rel="stylesheet" href="style.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Text:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <title>Battleship</title>
+    <script defer="defer" src="main.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/style.css">
   </head>
   <body>
+    <div id="app" class="app">
+      <div id="content-left">
+      </div>
+      <div id="content-right">
+      </div>
+      <div id="welcome-screen">
+          <p>Battleship</p>
+          <form>
+            <input type="text" id="name" name="name" placeholder="Captain name" minLength=0 maxLength=20>
+          </form>
+          <button id="play-button">Play</button>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!--
+<body>
     <div id="content">
         <div id="content-left">
         </div>
@@ -20,6 +44,5 @@
             <button id="play-button">Play</button>
         </div>
     </div>
-    <script src="main.js"></script>
   </body>
-</html>
+-->

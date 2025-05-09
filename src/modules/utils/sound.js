@@ -20,8 +20,8 @@ class Sound{
 }
 
 
+export default Sound
 
-module.exports=Sound
 
 /*
 let test = new Sound();

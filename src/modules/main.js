@@ -1,5 +1,6 @@
-const Sound = require('./utils/sound')
-const Display = require ('./DOM/display')
+import Sound from './utils/sound.js';
+import Display from './DOM/display.js';
+
 
 
 

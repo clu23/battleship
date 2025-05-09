@@ -1,5 +1,3 @@
-const GameBoard = require('./gameboard')
-
 
 class Player{
 
@@ -48,4 +46,4 @@ class Player{
 }
 
 
-module.exports=Player
+export default Player
