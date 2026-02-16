@@ -124,19 +124,24 @@ class GameBoard {
 
     takeHit(row, column) {
         if (row < 0 || row >= SIZE || column < 0 || column >= SIZE) {
-            return false
+            return { result: 'miss' }
         }
 
-        if (this.board[row][column] !== 'x') {
-            this.board[row][column].hit();
-            this.board[row][column] = 'o';
-            return true
+        const cell = this.board[row][column];
+
+        if (cell === 'hit' || cell === 'miss') {
+            return { result: 'already' }
         }
-        else {
-            this.board[row][column] = 'o';
-            this.missedShots[row][column] = true;
-            return false
+
+        if (cell !== 'x') {
+            cell.hit();
+            this.board[row][column] = 'hit';
+            return { result: 'hit', ship: cell, sunk: cell.isSunk() }
         }
+
+        this.board[row][column] = 'miss';
+        this.missedShots[row][column] = true;
+        return { result: 'miss' }
     }
 
     checkSunk() {

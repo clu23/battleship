@@ -80,15 +80,33 @@ describe("Gameboard", () => {
 
     test('receive attacks', () => {
         gameboard.placeShip(ship, 1, 1, 'X')
-        gameboard.takeHit(1, 3)
-        expect(gameboard.board[1][3]).toEqual('o')
-        expect(gameboard.board[1][1].hits).toBe(1)
+        const hitResult = gameboard.takeHit(1, 3)
+        expect(hitResult).toEqual({ result: 'hit', ship: ship, sunk: false })
+        expect(gameboard.board[1][3]).toBe('hit')
+        expect(ship.hits).toBe(1)
     })
 
     test('keep track of missed shots', () => {
         gameboard.placeShip(ship, 1, 1, 'X')
-        gameboard.takeHit(1, 4)
+        const missResult = gameboard.takeHit(1, 4)
+        expect(missResult).toEqual({ result: 'miss' })
+        expect(gameboard.board[1][4]).toBe('miss')
         expect(gameboard.missedShots[1][4]).toBe(true)
+    })
+
+    test('return already when hitting same cell twice', () => {
+        gameboard.placeShip(ship, 1, 1, 'X')
+        gameboard.takeHit(1, 1)
+        const alreadyResult = gameboard.takeHit(1, 1)
+        expect(alreadyResult).toEqual({ result: 'already' })
+    })
+
+    test('return sunk true when last hit sinks a ship', () => {
+        gameboard.placeShip(ship, 1, 1, 'X')
+        gameboard.takeHit(1, 1)
+        gameboard.takeHit(1, 2)
+        const sunkResult = gameboard.takeHit(1, 3)
+        expect(sunkResult).toEqual({ result: 'hit', ship: ship, sunk: true })
     })
 
     test('is game over', () => {
