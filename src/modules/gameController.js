@@ -1,0 +1,103 @@
+import Game from './factories/game.js';
+import Ship from './factories/ship.js';
+
+const SHIPS_TO_PLACE = [
+    { name: 'Carrier', size: 5 },
+    { name: 'Battleship', size: 4 },
+    { name: 'Destroyer', size: 3 },
+    { name: 'Submarine', size: 3 },
+    { name: 'PatrolBoat', size: 2 },
+];
+
+class GameController {
+    constructor() {
+        this.game = new Game();
+        this.phase = 'setup';
+        this.orientation = 'X';
+        this.placedShipsCount = 0;
+    }
+
+    getShipsToPlace() {
+        return SHIPS_TO_PLACE.map(s => ({ ...s }));
+    }
+
+    getCurrentShipToPlace() {
+        if (this.placedShipsCount >= SHIPS_TO_PLACE.length) return null;
+        return { ...SHIPS_TO_PLACE[this.placedShipsCount] };
+    }
+
+    rotateOrientation() {
+        this.orientation = this.orientation === 'X' ? 'Y' : 'X';
+        return this.orientation;
+    }
+
+    placePlayerShip(ship, row, col, orientation) {
+        if (this.phase !== 'setup') return false;
+        const shipObj = new Ship(ship.size, ship.name);
+        const placed = this.game.playerBoard.placeShip(shipObj, row, col, orientation);
+        if (placed) {
+            this.placedShipsCount++;
+        }
+        return placed;
+    }
+
+    placeComputerShips() {
+        this.game.computerBoard.placeShipsRandomly();
+    }
+
+    startBattle() {
+        if (this.placedShipsCount < SHIPS_TO_PLACE.length) return false;
+        this.placeComputerShips();
+        this.phase = 'battle';
+        this.game.gamePhase = 'battle';
+        this.game.currentTurn = 'player';
+        return true;
+    }
+
+    resetPlacement() {
+        const name = this.game.player.name;
+        this.game.playerBoard = new (this.game.playerBoard.constructor)();
+        this.placedShipsCount = 0;
+        this.orientation = 'X';
+    }
+
+    playerAttack(row, col) {
+        if (this.phase !== 'battle' || this.game.currentTurn !== 'player') return null;
+        if (this.game.player.alreadyHit(row, col)) return { result: 'already' };
+
+        this.game.player.hitCoords.push([row, col]);
+        const result = this.game.computerBoard.takeHit(row, col);
+        this.game.switchTurn();
+        return result;
+    }
+
+    computerTurn() {
+        if (this.phase !== 'battle' || this.game.currentTurn !== 'computer') return null;
+
+        let row, col;
+        do {
+            row = Math.floor(Math.random() * 10);
+            col = Math.floor(Math.random() * 10);
+        } while (this.game.computer.alreadyHit(row, col));
+
+        this.game.computer.hitCoords.push([row, col]);
+        const result = this.game.playerBoard.takeHit(row, col);
+        this.game.switchTurn();
+        return { row, col, ...result };
+    }
+
+    checkGameOver() {
+        if (this.game.computerBoard.isGameOver()) return 'player';
+        if (this.game.playerBoard.isGameOver()) return 'computer';
+        return null;
+    }
+
+    resetGame() {
+        this.game.reset();
+        this.phase = 'setup';
+        this.orientation = 'X';
+        this.placedShipsCount = 0;
+    }
+}
+
+export default GameController;
