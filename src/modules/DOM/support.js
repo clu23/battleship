@@ -25,11 +25,14 @@ const support = (() => {
         const map = document.createElement('div')
         map.id = `board-${description}`
         map.classList.add('board', description)
-    
+
+        const corner = document.createElement('div')
+        corner.className = 'board-corner'
+        map.appendChild(corner)
         map.appendChild(createLettersSection())
         map.appendChild(createNumbersSection())
         map.appendChild(createBoard(description))
-    
+
         return map
     }
 
@@ -68,15 +71,17 @@ const support = (() => {
         const board = document.createElement('div')
         board.id = `field-container-${description}`
         board.className = `field-container`
-    
+
         for (let i = 0; i < BOARD_SIZE; i += 1) {
           for (let j = 0; j < BOARD_SIZE; j += 1) {
             const field = document.createElement('div')
             field.className = 'field'
+            field.dataset.row = i
+            field.dataset.col = j
             board.appendChild(field)
           }
         }
-    
+
         return board
     }
 

@@ -1,138 +1,556 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Herr+Von+Muellerhoff&family=Montserrat:wght@300;400;700&display=swap");
 
-
-
-/* General */
+/* ===================== GENERAL ===================== */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family:  sans-serif;
+    font-family: 'Big Shoulders Stencil Text', 'Montserrat', sans-serif;
     text-align: center;
-  }
+}
 
-  html {
+html {
     min-height: 100vh;
     height: -webkit-fill-available;
-  }
-  
-  html,
-  body {
+}
+
+html,
+body {
     min-height: 100vh;
-    min-height: -webkit-fill-available; 
-  }
-  
-  body {
+    min-height: -webkit-fill-available;
+}
+
+body {
     min-height: 100vh;
     overflow-x: hidden;
-  }
- 
+    background-color: #0a1628;
+    color: #e8e4d9;
+}
 
-  #header {
-    width: 100vw;
-    height: 10vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+/* ===================== APP LAYOUT ===================== */
 
-
-  #content {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .app {
+.app {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     position: relative;
     min-height: 100vh;
     height: -webkit-fill-available;
     text-align: center;
-  }
+}
 
-
-  
-  #content-left{
-    width: 50vw;
+#content-left {
+    flex: 1;
     min-height: 100vh;
-    height: -webkit-fill-available;
-    background: url("../../src/images/image_battleship_1.png");
-    background-size: cover;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-  }
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0a1628 0%, #0f2040 50%, #0a1628 100%);
+    border-right: 1px solid rgba(60, 100, 160, 0.25);
+}
 
-  #content-right{
-    width: 50vw;
+#content-right {
+    flex: 1;
     min-height: 100vh;
-    height: -webkit-fill-available;
-    background: url("../../src/images/image_battleship_2.png");
-    background-size: cover;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-  }
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0a1628 0%, #0f2040 50%, #0a1628 100%);
+}
 
-  #welcome-screen{
+/* ===================== WELCOME SCREEN ===================== */
+
+#welcome-screen {
     width: 35vw;
-    height: 45vh;
+    min-width: 380px;
+    height: auto;
+    padding: 40px 30px;
     position: absolute;
-    padding:10px;
-    z-index: 50;
+    z-index: 100;
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: rgba(7, 19, 51, 0.98);
     color: white;
     border-radius: 10px;
-  }
+    border: 1px solid rgba(100, 140, 200, 0.3);
+    box-shadow: 0 0 40px rgba(10, 30, 80, 0.6);
+}
 
+#welcome-screen.hidden {
+    display: none;
+}
 
-  p{
+#welcome-screen p {
+    color: #d4a843;
+    font-size: 55px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+input {
+    background-color: rgba(7, 19, 51, 0.98);
+    border: none;
+    margin-top: 20px;
+    font-size: 18px;
+    color: white;
+    border-bottom: 2px solid rgba(212, 168, 67, 0.6);
+    padding: 8px 5px;
+    font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-bottom-color: #d4a843;
+}
+
+input::placeholder {
+    font-size: 18px;
+    color: rgb(180, 180, 180);
+    font-weight: 300;
+    font-family: 'Montserrat', sans-serif;
+}
+
+#play-button {
+    font-size: 28px;
+    font-weight: 700;
+    color: #d4a843;
+    background-color: rgba(19, 44, 116, 0.9);
+    padding: 12px 40px;
+    border-radius: 8px;
+    margin-top: 30px;
+    border: 2px solid rgba(212, 168, 67, 0.4);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transition: all 0.3s ease;
+}
+
+#play-button:hover {
+    background-color: rgba(30, 60, 140, 1);
+    border-color: #d4a843;
+    box-shadow: 0 0 15px rgba(212, 168, 67, 0.3);
+}
+
+/* ===================== MUTE BUTTON ===================== */
+
+.mute-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    background: rgba(10, 22, 40, 0.7);
+    border: 1px solid rgba(60, 100, 160, 0.3);
+    border-radius: 50%;
+    color: #8a9bb8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mute-btn:hover {
+    background: rgba(20, 40, 80, 0.9);
+    border-color: rgba(100, 150, 220, 0.5);
+}
+
+/* ===================== SETUP PHASE ===================== */
+
+.setup-container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+}
+
+.grid-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.setup-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #d4a843;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+}
+
+/* ===================== GRID / BOARD ===================== */
+
+.board {
+    display: grid;
+    grid-template-columns: 28px auto;
+    grid-template-rows: 22px auto;
+}
+
+.board-corner {
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.letter-container {
+    grid-row: 1;
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(10, 36px);
+}
+
+.letter {
+    width: 36px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #8a9bb8;
+    letter-spacing: 1px;
+}
+
+.number-container {
+    grid-row: 2;
+    grid-column: 1;
+    display: grid;
+    grid-template-rows: repeat(10, 36px);
+}
+
+.number {
+    width: 28px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #8a9bb8;
+}
+
+.field-container {
+    grid-row: 2;
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: repeat(10, 36px);
+    grid-template-rows: repeat(10, 36px);
+    position: relative;
+}
+
+.field {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(20, 50, 100, 0.4);
+    border: 1px solid rgba(60, 100, 160, 0.4);
+    transition: background-color 0.15s ease;
+}
+
+.field:hover {
+    background-color: rgba(30, 70, 130, 0.6);
+}
+
+/* Preview during drag */
+.field.preview-valid {
+    background-color: rgba(40, 160, 80, 0.45);
+    border-color: rgba(60, 200, 100, 0.6);
+}
+
+.field.preview-invalid {
+    background-color: rgba(200, 50, 50, 0.4);
+    border-color: rgba(240, 80, 80, 0.6);
+}
+
+/* Ship placed on grid cell */
+.field.ship-placed {
+    background-color: rgba(40, 80, 140, 0.5);
+    border-color: rgba(80, 130, 200, 0.5);
+}
+
+/* Ship SVG overlay on grid */
+.ship-overlay {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.8;
+    z-index: 5;
+}
+
+.ship-overlay-svg {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ship-overlay-svg svg {
+    width: 100%;
+    height: 100%;
+}
+
+.ship-overlay-svg.rotated {
+    transform: rotate(90deg);
+    transform-origin: top left;
+    position: relative;
+    left: 100%;
+}
+
+/* ===================== DOCK ===================== */
+
+.dock {
+    background: rgba(10, 25, 55, 0.8);
+    border: 1px solid rgba(60, 100, 160, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 220px;
+    max-width: 280px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.dock-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #8a9bb8;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(60, 100, 160, 0.3);
+}
+
+.ship-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ship-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 6px;
+    background: rgba(20, 45, 90, 0.4);
+    border: 1px solid rgba(60, 100, 160, 0.2);
+    cursor: grab;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.ship-item:hover {
+    background: rgba(30, 60, 120, 0.5);
+    border-color: rgba(80, 130, 200, 0.4);
+}
+
+.ship-item:active {
+    cursor: grabbing;
+}
+
+.ship-item.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
+
+.ship-item.placed {
+    opacity: 0.25;
+    cursor: default;
+    pointer-events: none;
+}
+
+.ship-svg-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    transition: transform 0.3s ease;
+}
+
+.ship-svg-container svg {
+    opacity: 0.85;
+    max-width: 100%;
+}
+
+.ship-svg-container.rotated {
+    transform: rotate(90deg);
+}
+
+.ship-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #8a9bb8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* ===================== SETUP BUTTONS ===================== */
+
+.setup-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setup-btn {
+    font-size: 16px;
+    font-weight: 700;
+    color: #c0cde0;
+    background: rgba(20, 45, 90, 0.6);
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(60, 100, 160, 0.3);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.2s ease;
+    margin-top: 0;
+}
+
+.setup-btn:hover {
+    background: rgba(30, 60, 120, 0.8);
+    border-color: rgba(100, 150, 220, 0.5);
+    color: #e8e4d9;
+}
+
+.setup-btn.start-btn {
+    background: rgba(30, 80, 50, 0.6);
+    border-color: rgba(60, 160, 80, 0.3);
+    color: #8fd4a0;
+    margin-top: 8px;
+}
+
+.setup-btn.start-btn:hover:not(:disabled) {
+    background: rgba(40, 110, 60, 0.8);
+    border-color: rgba(80, 200, 100, 0.5);
+    color: #b0f0c0;
+}
+
+.setup-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* ===================== BATTLE PHASE ===================== */
+
+.battle-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.board-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #d4a843;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.message-bar {
+    font-size: 16px;
+    font-weight: 600;
+    color: #c0cde0;
+    background: rgba(10, 25, 55, 0.7);
+    border: 1px solid rgba(60, 100, 160, 0.3);
+    border-radius: 6px;
+    padding: 10px 20px;
+    min-width: 300px;
+    letter-spacing: 1px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Enemy grid: clickable cells */
+#field-container-computer .field {
+    cursor: crosshair;
+}
+
+#field-container-computer .field.cell-hit,
+#field-container-computer .field.cell-miss {
+    cursor: default;
+}
+
+/* Hit and miss cell colors */
+.field.cell-hit {
+    background-color: rgba(220, 50, 50, 0.7);
+    border-color: rgba(240, 80, 80, 0.8);
+}
+
+.field.cell-miss {
+    background-color: rgba(180, 190, 200, 0.3);
+    border-color: rgba(160, 170, 180, 0.4);
+}
+
+/* ===================== GAME OVER ===================== */
+
+.gameover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gameover-box {
+    background: rgba(7, 19, 51, 0.98);
+    border: 1px solid rgba(100, 140, 200, 0.3);
+    border-radius: 12px;
+    padding: 50px 60px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(10, 30, 80, 0.8);
+}
+
+.gameover-title {
+    font-size: 48px;
+    font-weight: 800;
+    color: #d4a843;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+}
+
+.gameover-subtitle {
+    font-size: 18px;
+    color: #8a9bb8;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    margin-bottom: 30px;
+    margin-top: 0;
+}
+
+/* ===================== GENERAL OVERRIDES ===================== */
+
+p {
     color: white;
     font-size: 55px;
     margin-top: 15px;
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
-  }
+}
 
-  input{
-    background-color:rgba(7, 19, 51, 0.98);
-    border: none;
-    margin-top: 40px;
-    font-size: 18px;
-    color:white;
-    border-bottom: solid white;
-    padding: 5px;
-  }
-
-
-  button {
-    font-size: 30px;
-    color: white;
-    background-color:rgba(19, 44, 116,1.0);
-    padding:10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius:10px;
-    margin-top:50px;
-  }
-
-
-  input::placeholder {
-    font-size: 18px;
-    color: rgb(214, 213, 213);
-    font-weight: 100;
-  }
-
-  input:focus{
-    outline: none;
+button {
+    font-family: 'Big Shoulders Stencil Text', sans-serif;
 }
