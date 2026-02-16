@@ -1,6 +1,6 @@
-const GameBoard = require('../factories/gameboard')
-const Ship = require('../factories/ship')
-const Player = require ('../factories/player')
+import GameBoard from '../factories/gameboard.js'
+import Ship from '../factories/ship.js'
+import Player from '../factories/player.js'
 
 const SIZE=10;
 

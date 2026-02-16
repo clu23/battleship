@@ -1,5 +1,4 @@
-//import Ship from "../factories/ship.js"
-const Ship = require('../factories/ship')
+import Ship from '../factories/ship.js'
 
 describe("Ship", () => {
     let ship
