@@ -48,11 +48,11 @@ class GameBoard {
         }
 
         const ships = []
-        const carrier = new Ship(5, "carrier")
-        const battleship = new Ship(4, "battleship")
-        const destroyer = new Ship(3, "destroyer")
-        const submarine = new Ship(3, "submarine")
-        const patrolBoat = new Ship(2, "patrolBoat")
+        const carrier = new Ship(5, "Carrier")
+        const battleship = new Ship(4, "Battleship")
+        const destroyer = new Ship(3, "Destroyer")
+        const submarine = new Ship(3, "Submarine")
+        const patrolBoat = new Ship(2, "PatrolBoat")
         ships.push(carrier, battleship, destroyer, submarine, patrolBoat)
 
         let succesfulPlacements = 0

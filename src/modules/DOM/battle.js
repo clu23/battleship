@@ -25,11 +25,7 @@ function loadBattleContent() {
     const playerMap = support.createMap('player');
     leftSection.appendChild(playerMap);
 
-    const messageBar = document.createElement('div');
-    messageBar.className = 'message-bar';
-    messageBar.id = 'message-bar';
-    messageBar.textContent = 'Your turn \u2014 fire at the enemy grid!';
-    leftSection.appendChild(messageBar);
+    showMessage('Your turn \u2014 fire at the enemy grid!');
 
     contentLeft.appendChild(leftSection);
 
@@ -225,10 +221,6 @@ function ensureTypewriterZone() {
 }
 
 function showMessage(text) {
-    // Also update the static message bar
-    const bar = document.getElementById('message-bar');
-    if (bar) bar.textContent = text;
-
     // Clear any running typewriter
     if (typewriterTimer) clearInterval(typewriterTimer);
     if (typewriterFadeTimer) clearTimeout(typewriterFadeTimer);
