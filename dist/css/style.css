@@ -310,6 +310,12 @@ input::placeholder {
     left: 100%;
 }
 
+/* Battle phase: ships visible under hits */
+.battle-ship-overlay {
+    opacity: 0.3;
+    z-index: 2;
+}
+
 /* ===================== DOCK ===================== */
 
 .dock {
@@ -475,6 +481,38 @@ input::placeholder {
     min-width: 300px;
     letter-spacing: 1px;
     font-family: 'Montserrat', sans-serif;
+}
+
+/* ===================== TYPEWRITER MESSAGE ===================== */
+
+.typewriter-zone {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 250;
+    pointer-events: none;
+}
+
+.typewriter-msg {
+    background: rgba(7, 19, 51, 0.92);
+    border: 1px solid rgba(212, 168, 67, 0.4);
+    border-radius: 8px;
+    padding: 14px 32px;
+    color: #d4a843;
+    font-family: 'Big Shoulders Stencil Text', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 0 30px rgba(212, 168, 67, 0.15);
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.typewriter-msg.fadeout {
+    opacity: 0;
 }
 
 /* Enemy grid: clickable cells */

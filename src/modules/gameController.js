@@ -86,6 +86,18 @@ class GameController {
         return { row, col, ...result };
     }
 
+    getSunkShipPositions(board) {
+        return board.placements
+            .filter(p => p.ship.isSunk())
+            .map(p => ({
+                name: p.ship.name,
+                size: p.ship.size,
+                row: p.row,
+                col: p.column,
+                orientation: p.orientation,
+            }));
+    }
+
     checkGameOver() {
         if (this.game.computerBoard.isGameOver()) return 'player';
         if (this.game.playerBoard.isGameOver()) return 'computer';

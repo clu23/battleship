@@ -156,6 +156,31 @@ describe('GameController', () => {
             });
             expect(gc.checkGameOver()).toBe('computer');
         });
+
+        test('getSunkShipPositions returns sunk ships with positions', () => {
+            const board = gc.game.playerBoard;
+            expect(gc.getSunkShipPositions(board)).toHaveLength(0);
+
+            // Sink the first ship (Carrier at row 0, col 0, orientation X)
+            const carrier = board.fleet[0];
+            for (let i = 0; i < carrier.size; i++) {
+                carrier.hit();
+            }
+
+            const sunk = gc.getSunkShipPositions(board);
+            expect(sunk).toHaveLength(1);
+            expect(sunk[0]).toEqual({
+                name: 'Carrier',
+                size: 5,
+                row: 0,
+                col: 0,
+                orientation: 'X',
+            });
+        });
+
+        test('getSunkShipPositions returns empty when no ships sunk', () => {
+            expect(gc.getSunkShipPositions(gc.game.computerBoard)).toHaveLength(0);
+        });
     });
 
     describe('resetGame', () => {

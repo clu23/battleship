@@ -10,6 +10,7 @@ class GameBoard {
         this.missedShots = new Array(SIZE).fill(false).map(() => new Array(SIZE).fill(false));
         this.placeMode = "X";
         this.fleet = [];
+        this.placements = [];
     }
 
     rotate() {
@@ -37,6 +38,7 @@ class GameBoard {
             }
         }
         this.fleet.push(ship);
+        this.placements.push({ ship, row, column, orientation: placementMode });
         return true
     }
 

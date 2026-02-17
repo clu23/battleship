@@ -45,4 +45,28 @@ function placementFail() {
     osc.stop(ctx.currentTime + 0.25);
 }
 
-export { placementSuccess, placementFail };
+function playMp3(importPromise) {
+    importPromise.then(module => {
+        const audio = new Audio(module.default);
+        audio.volume = 0.5;
+        audio.play();
+    });
+}
+
+function attackFire() {
+    playMp3(import('../../sounds/canon.mp3'));
+}
+
+function attackHit() {
+    playMp3(import('../../sounds/explosion.mp3'));
+}
+
+function attackMiss() {
+    playMp3(import('../../sounds/splash.mp3'));
+}
+
+function shipSunk() {
+    playMp3(import('../../sounds/sunk.mp3'));
+}
+
+export { placementSuccess, placementFail, attackFire, attackHit, attackMiss, shipSunk };

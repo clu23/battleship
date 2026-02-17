@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkbattleship=self.webpackChunkbattleship||[]).push([[850],{850:(s,p,e)=>{s.exports=e.p+"img/splash240273dc63f9650780fd.mp3"}}]);

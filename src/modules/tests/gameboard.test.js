@@ -26,10 +26,11 @@ describe("Gameboard", () => {
     })
 
     test('create and initialize a gameboard', () => {
-        expect(gameboard).toEqual({ board: testBoard, 
-                                    missedShots: testMissedShots, 
-                                    placeMode: 'X', 
-                                    fleet: []})
+        expect(gameboard).toEqual({ board: testBoard,
+                                    missedShots: testMissedShots,
+                                    placeMode: 'X',
+                                    fleet: [],
+                                    placements: []})
     })
 
     test('place a ship', () => {
@@ -39,18 +40,20 @@ describe("Gameboard", () => {
         testBoard[1][3] = ship
         expect(gameboard).toEqual({
             board: testBoard,
-            missedShots: testMissedShots, 
-            placeMode: 'X', 
-            fleet: [ship]})
+            missedShots: testMissedShots,
+            placeMode: 'X',
+            fleet: [ship],
+            placements: [{ ship, row: 1, column: 1, orientation: 'X' }]})
     })
 
     test('change placement mode', () => {
         gameboard.rotate()
         expect(gameboard).toEqual({
             board: testBoard,
-            missedShots: testMissedShots, 
-            placeMode: 'Y', 
-            fleet: []})
+            missedShots: testMissedShots,
+            placeMode: 'Y',
+            fleet: [],
+            placements: []})
     })
 
     test('place 5 ships randomly', () => {

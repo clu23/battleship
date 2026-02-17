@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkbattleship=self.webpackChunkbattleship||[]).push([[392],{392:(e,p,s)=>{e.exports=s.p+"img/canonc0304dc08bf1f3a6624c.mp3"}}]);
