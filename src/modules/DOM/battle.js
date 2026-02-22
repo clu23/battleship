@@ -32,6 +32,7 @@ function loadBattleContent() {
     contentLeft.appendChild(leftSection);
 
     renderPlayerShipOverlays();
+    addRadarOverlay('field-container-player');
 
     const contentRight = document.getElementById('content-right');
     contentRight.innerHTML = '';
@@ -50,6 +51,7 @@ function loadBattleContent() {
 
     contentRight.appendChild(rightSection);
 
+    addRadarOverlay('field-container-computer');
     initAttackListeners();
 }
 
@@ -97,6 +99,21 @@ function renderSunkEnemyShip(shipData) {
     if (container.querySelector(`.ship-overlay[data-ship-name="${shipData.name}"]`)) return;
 
     renderShipOverlay(container, shipData.name, shipData.size, shipData.row, shipData.col, shipData.orientation);
+}
+
+function addRadarOverlay(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const radar = document.createElement('div');
+    radar.className = 'radar-sweep';
+    container.appendChild(radar);
+}
+
+function stopRadar() {
+    document.querySelectorAll('.radar-sweep').forEach(el => {
+        el.classList.add('radar-stopped');
+    });
 }
 
 function initAttackListeners() {
@@ -263,6 +280,7 @@ function showMessage(text) {
 
 function showGameOverScreen(winner) {
     playerTurnLocked = true;
+    stopRadar();
 
     const overlay = document.createElement('div');
     overlay.className = 'gameover-overlay';
