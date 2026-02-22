@@ -106,9 +106,15 @@ content-left et content-right accueillent les grilles via support.js createMap()
 - [ ] Feedback visuel (vert=possible, rouge=impossible)
 
 ### Phase 4 — Polish
+- [ ] Remplacer les sons de splash/explosion par de meilleurs fichiers MP3
+- [ ] IA avec 3 niveaux de difficulté :
+  - Easy : tirs aléatoires (actuel)
+  - Medium : après un hit, l'IA cible les cases adjacentes
+  - Hard : medium + l'IA privilégie un pattern en damier pour chercher les bateaux
+- [ ] Animation radar : faisceau circulaire semi-transparent qui balaie les grilles en continu
+- [ ] Score panel : liste des bateaux coulés (joueur et ennemi) affichée à côté de chaque grille, avec le nom et une icône barrée quand coulé
 - [ ] CSS complet et responsive
 - [ ] Animations hits/miss
-- [ ] Curseur custom sur grille ennemie
 - [ ] Transition entre les phases (setup → battle → over)
 
 ## Conventions de code
