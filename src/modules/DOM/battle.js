@@ -1,6 +1,7 @@
 import support from './support.js';
 import { getSvg, CELL_SIZE } from '../utils/shipSvgs.js';
 import { attackFire, attackHit, attackMiss, shipSunk } from '../utils/sfx.js';
+import { createPanel, updatePlayerPanel, updateEnemyPanel } from './scorePanel.js';
 
 let controller = null;
 let playerTurnLocked = false;
@@ -24,6 +25,7 @@ function loadBattleContent() {
 
     const playerMap = support.createMap('player');
     leftSection.appendChild(playerMap);
+    leftSection.appendChild(createPanel('Your Fleet'));
 
     showMessage('Your turn \u2014 fire at the enemy grid!');
 
@@ -44,6 +46,7 @@ function loadBattleContent() {
 
     const computerMap = support.createMap('computer');
     rightSection.appendChild(computerMap);
+    rightSection.appendChild(createPanel('Enemy Fleet'));
 
     contentRight.appendChild(rightSection);
 
@@ -121,6 +124,7 @@ function onCellClick(e) {
     setTimeout(() => {
         applyCellResult(cell, result);
         playResultSound(result);
+        updateEnemyPanel(result);
 
         if (result.result === 'hit' && result.sunk) {
             const sunkPositions = controller.getSunkShipPositions(controller.game.computerBoard);
@@ -170,6 +174,7 @@ function doComputerTurn() {
         }
 
         playResultSound(result);
+        updatePlayerPanel(controller.game.playerBoard);
 
         const winner = controller.checkGameOver();
         if (winner) {
