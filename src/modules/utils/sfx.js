@@ -45,28 +45,37 @@ function placementFail() {
     osc.stop(ctx.currentTime + 0.25);
 }
 
-function playMp3(importPromise) {
+function playMp3WithRate(importPromise, rate) {
     importPromise.then(module => {
         const audio = new Audio(module.default);
         audio.volume = 0.5;
+        audio.playbackRate = rate;
         audio.play();
     });
 }
 
-function attackFire() {
-    playMp3(import('../../sounds/canon.mp3'));
+function playAttackSequence(result) {
+    // 1. Canon fire immediately
+    playMp3WithRate(import('../../sounds/canon.mp3'), 0.9);
+
+    // 2. Result sound after 500ms
+    return new Promise(resolve => {
+        setTimeout(() => {
+            if (result.result === 'hit' && result.sunk) {
+                playMp3WithRate(import('../../sounds/explosion.mp3'), 0.7);
+                setTimeout(() => {
+                    playMp3WithRate(import('../../sounds/sunk.mp3'), 0.6);
+                    setTimeout(resolve, 400);
+                }, 300);
+            } else if (result.result === 'hit') {
+                playMp3WithRate(import('../../sounds/explosion.mp3'), 0.7);
+                setTimeout(resolve, 400);
+            } else {
+                playMp3WithRate(import('../../sounds/splash.mp3'), 1.1);
+                setTimeout(resolve, 300);
+            }
+        }, 500);
+    });
 }
 
-function attackHit() {
-    playMp3(import('../../sounds/explosion.mp3'));
-}
-
-function attackMiss() {
-    playMp3(import('../../sounds/splash.mp3'));
-}
-
-function shipSunk() {
-    playMp3(import('../../sounds/sunk.mp3'));
-}
-
-export { placementSuccess, placementFail, attackFire, attackHit, attackMiss, shipSunk };
+export { placementSuccess, placementFail, playAttackSequence };

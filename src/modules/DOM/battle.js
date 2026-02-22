@@ -1,6 +1,6 @@
 import support from './support.js';
 import { getSvg, CELL_SIZE } from '../utils/shipSvgs.js';
-import { attackFire, attackHit, attackMiss, shipSunk } from '../utils/sfx.js';
+import { playAttackSequence } from '../utils/sfx.js';
 import { createPanel, updatePlayerPanel, updateEnemyPanel } from './scorePanel.js';
 
 let controller = null;
@@ -133,91 +133,79 @@ function onCellClick(e) {
 
     if (controller.game.player.alreadyHit(row, col)) return;
 
-    attackFire();
-
     const result = controller.playerAttack(row, col);
     if (!result || result.result === 'already') return;
 
-    setTimeout(() => {
-        applyCellResult(cell, result);
-        playResultSound(result);
-        updateEnemyPanel(result);
+    playerTurnLocked = true;
 
-        if (result.result === 'hit' && result.sunk) {
-            const sunkPositions = controller.getSunkShipPositions(controller.game.computerBoard);
-            const sunkShip = sunkPositions.find(s => s.name === result.ship.name);
-            if (sunkShip) renderSunkEnemyShip(sunkShip);
-        }
+    // Visual + message immediately
+    applyCellResult(cell, result);
+    updateEnemyPanel(result);
 
-        const winner = controller.checkGameOver();
-        if (winner) {
-            showMessage(winner === 'player' ? 'Victory! You sank the entire enemy fleet!' : 'Defeat! Your fleet has been sunk!');
-            showGameOverScreen(winner);
-            return;
-        }
+    if (result.result === 'hit' && result.sunk) {
+        const sunkPositions = controller.getSunkShipPositions(controller.game.computerBoard);
+        const sunkShip = sunkPositions.find(s => s.name === result.ship.name);
+        if (sunkShip) renderSunkEnemyShip(sunkShip);
+    }
 
-        if (result.result === 'hit' && result.sunk) {
-            showMessage(`You sank their ${result.ship.name}!`);
-        } else if (result.result === 'hit') {
-            showMessage('Hit!');
-        } else {
-            showMessage('Miss...');
-        }
+    const winner = controller.checkGameOver();
+    if (winner) {
+        showMessage(winner === 'player' ? 'Victory! You sank the entire enemy fleet!' : 'Defeat! Your fleet has been sunk!');
+        showGameOverScreen(winner);
+        return;
+    }
 
-        playerTurnLocked = true;
-        setTimeout(() => {
-            doComputerTurn();
-            playerTurnLocked = false;
-        }, 500);
-    }, 150);
+    if (result.result === 'hit' && result.sunk) {
+        showMessage(`You sank their ${result.ship.name}!`);
+    } else if (result.result === 'hit') {
+        showMessage('Hit!');
+    } else {
+        showMessage('Miss...');
+    }
+
+    // Sound sequence in parallel, computer turn after it ends
+    playAttackSequence(result).then(() => {
+        setTimeout(() => doComputerTurn(), 500);
+    });
 }
 
 function doComputerTurn() {
-    attackFire();
+    const result = controller.computerTurn();
+    if (!result) {
+        playerTurnLocked = false;
+        return;
+    }
 
-    setTimeout(() => {
-        const result = controller.computerTurn();
-        if (!result) {
-            playerTurnLocked = false;
-            return;
-        }
-
-        const container = document.getElementById('field-container-player');
-        if (!container) return;
-
+    // Visual + message immediately
+    const container = document.getElementById('field-container-player');
+    if (container) {
         const cell = container.querySelector(`.field[data-row="${result.row}"][data-col="${result.col}"]`);
         if (cell) {
             applyCellResult(cell, result);
         }
-
-        playResultSound(result);
-        updatePlayerPanel(controller.game.playerBoard);
-
-        const winner = controller.checkGameOver();
-        if (winner) {
-            showMessage(winner === 'player' ? 'Victory! You sank the entire enemy fleet!' : 'Defeat! Your fleet has been sunk!');
-            showGameOverScreen(winner);
-            return;
-        }
-
-        if (result.result === 'hit' && result.sunk) {
-            showMessage(`Enemy sank your ${result.ship.name}! Your turn.`);
-        } else if (result.result === 'hit') {
-            showMessage('Enemy hit your ship! Your turn.');
-        } else {
-            showMessage('Enemy missed. Your turn!');
-        }
-    }, 150);
-}
-
-function playResultSound(result) {
-    if (result.result === 'hit' && result.sunk) {
-        shipSunk();
-    } else if (result.result === 'hit') {
-        attackHit();
-    } else {
-        attackMiss();
     }
+
+    updatePlayerPanel(controller.game.playerBoard);
+
+    const winner = controller.checkGameOver();
+    if (winner) {
+        showMessage(winner === 'player' ? 'Victory! You sank the entire enemy fleet!' : 'Defeat! Your fleet has been sunk!');
+        showGameOverScreen(winner);
+        return;
+    }
+
+    if (result.result === 'hit' && result.sunk) {
+        showMessage(`Enemy sank your ${result.ship.name}! Your turn.`);
+    } else if (result.result === 'hit') {
+        showMessage('Enemy hit your ship! Your turn.');
+    } else {
+        showMessage('Enemy missed. Your turn!');
+    }
+
+    // Unlock clicks after sound sequence ends
+    playAttackSequence(result).then(() => {
+        playerTurnLocked = false;
+    });
 }
 
 function applyCellResult(cell, result) {

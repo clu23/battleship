@@ -1,10 +1,14 @@
+import { getSvg } from '../utils/shipSvgs.js';
+
 const SHIPS = [
-    { name: 'Carrier', size: 5 },
-    { name: 'Battleship', size: 4 },
-    { name: 'Destroyer', size: 3 },
-    { name: 'Submarine', size: 3 },
+    { name: 'Carrier', displayName: 'Carrier', size: 5 },
+    { name: 'Battleship', displayName: 'Battleship', size: 4 },
+    { name: 'Destroyer', displayName: 'Destroyer', size: 3 },
+    { name: 'Submarine', displayName: 'Submarine', size: 3 },
     { name: 'PatrolBoat', displayName: 'Patrol Boat', size: 2 },
 ];
+
+const MINI_CELL = 25;
 
 function createPanel(title) {
     const panel = document.createElement('div');
@@ -23,20 +27,17 @@ function createPanel(title) {
         li.className = 'score-ship';
         li.dataset.shipName = ship.name;
 
+        const svgWrap = document.createElement('div');
+        svgWrap.className = 'score-ship-svg';
+        svgWrap.style.width = `${ship.size * MINI_CELL}px`;
+        svgWrap.style.height = `${MINI_CELL}px`;
+        svgWrap.innerHTML = getSvg(ship.name, ship.size, 'X');
+        li.appendChild(svgWrap);
+
         const nameSpan = document.createElement('span');
         nameSpan.className = 'score-ship-name';
-        nameSpan.textContent = ship.displayName || ship.name;
+        nameSpan.textContent = ship.displayName;
         li.appendChild(nameSpan);
-
-        const squares = document.createElement('span');
-        squares.className = 'score-ship-squares';
-        for (let i = 0; i < ship.size; i++) {
-            const sq = document.createElement('span');
-            sq.className = 'score-square';
-            sq.dataset.index = i;
-            squares.appendChild(sq);
-        }
-        li.appendChild(squares);
 
         const status = document.createElement('span');
         status.className = 'score-ship-status';
@@ -57,24 +58,9 @@ function updatePlayerPanel(board) {
         const li = panel.querySelector(`[data-ship-name="${ship.name}"]`);
         if (!li) return;
 
-        const squares = li.querySelectorAll('.score-square');
-        const status = li.querySelector('.score-ship-status');
-
         if (ship.isSunk()) {
             li.classList.add('score-sunk');
-            li.classList.remove('score-damaged');
-            squares.forEach(sq => sq.classList.add('score-square-hit'));
-            status.textContent = '\u2717';
-        } else if (ship.hits > 0) {
-            li.classList.add('score-damaged');
-            squares.forEach((sq, i) => {
-                if (i < ship.hits) {
-                    sq.classList.add('score-square-hit');
-                } else {
-                    sq.classList.remove('score-square-hit');
-                }
-            });
-            status.textContent = '';
+            li.querySelector('.score-ship-status').textContent = '\u2620';
         }
     });
 }
@@ -89,12 +75,8 @@ function updateEnemyPanel(attackResult) {
     const li = panel.querySelector(`[data-ship-name="${ship.name}"]`);
     if (!li) return;
 
-    const squares = li.querySelectorAll('.score-square');
-    const status = li.querySelector('.score-ship-status');
-
     li.classList.add('score-sunk');
-    squares.forEach(sq => sq.classList.add('score-square-hit'));
-    status.textContent = '\u2717';
+    li.querySelector('.score-ship-status').textContent = '\u2620';
 }
 
 export { createPanel, updatePlayerPanel, updateEnemyPanel };

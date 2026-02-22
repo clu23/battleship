@@ -653,70 +653,68 @@ input::placeholder {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
 .score-ship {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 4px 6px;
+    padding: 3px 6px;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.5s ease;
+}
+
+.score-ship-svg {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    opacity: 0.8;
+    transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+.score-ship-svg svg {
+    width: 100%;
+    height: 100%;
 }
 
 .score-ship-name {
     font-family: 'Big Shoulders Stencil Text', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: #c0cde0;
+    color: #8a9bb8;
     text-transform: uppercase;
     letter-spacing: 1px;
-    min-width: 100px;
     text-align: left;
-    transition: color 0.3s ease;
-}
-
-.score-ship-squares {
-    display: flex;
-    gap: 3px;
-}
-
-.score-square {
-    width: 14px;
-    height: 14px;
-    border: 1px solid rgba(60, 100, 160, 0.5);
-    border-radius: 2px;
-    background: rgba(20, 50, 100, 0.5);
-    transition: background-color 0.4s ease, border-color 0.4s ease;
-}
-
-.score-damaged .score-square.score-square-hit {
-    background: rgba(230, 160, 40, 0.8);
-    border-color: rgba(240, 180, 60, 0.9);
-}
-
-.score-sunk .score-square.score-square-hit {
-    background: rgba(200, 40, 40, 0.8);
-    border-color: rgba(220, 60, 60, 0.9);
+    transition: color 0.5s ease, text-decoration-color 0.5s ease;
+    text-decoration: line-through transparent;
 }
 
 .score-ship-status {
     font-size: 16px;
-    font-weight: 700;
-    color: rgba(200, 40, 40, 0.9);
     min-width: 18px;
     text-align: center;
-    transition: opacity 0.3s ease;
-}
-
-.score-sunk .score-ship-name {
-    text-decoration: line-through;
-    color: rgba(140, 150, 165, 0.5);
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 .score-sunk {
     background-color: rgba(200, 40, 40, 0.08);
+}
+
+.score-sunk .score-ship-svg {
+    opacity: 0.4;
+    filter: saturate(0.2) brightness(0.6);
+}
+
+.score-sunk .score-ship-name {
+    text-decoration: line-through;
+    text-decoration-color: rgba(200, 60, 60, 0.6);
+    color: rgba(140, 150, 165, 0.45);
+}
+
+.score-sunk .score-ship-status {
+    opacity: 1;
 }
 
 /* ===================== GENERAL OVERRIDES ===================== */
