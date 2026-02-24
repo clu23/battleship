@@ -1,4 +1,5 @@
 let audioCtx = null;
+let _sfxMuted = false;
 
 function getContext() {
     if (!audioCtx) {
@@ -7,7 +8,18 @@ function getContext() {
     return audioCtx;
 }
 
+export function isSfxMuted() {
+    return _sfxMuted;
+}
+
+export function toggleSfxMute() {
+    _sfxMuted = !_sfxMuted;
+    return _sfxMuted;
+}
+
 function placementSuccess() {
+    if (_sfxMuted) return;
+
     const ctx = getContext();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -27,6 +39,8 @@ function placementSuccess() {
 }
 
 function placementFail() {
+    if (_sfxMuted) return;
+
     const ctx = getContext();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -46,6 +60,8 @@ function placementFail() {
 }
 
 function playMp3WithRate(importPromise, rate) {
+    if (_sfxMuted) return;
+
     importPromise.then(module => {
         const audio = new Audio(module.default);
         audio.volume = 0.5;

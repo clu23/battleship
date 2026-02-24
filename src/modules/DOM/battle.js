@@ -266,6 +266,40 @@ function showMessage(text) {
     }, 40);
 }
 
+function buildDifficultySelector(currentDifficulty) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'gameover-difficulty';
+
+    const label = document.createElement('span');
+    label.className = 'difficulty-label';
+    label.textContent = 'Difficulty';
+    wrapper.appendChild(label);
+
+    const options = document.createElement('div');
+    options.className = 'difficulty-options';
+
+    ['easy', 'medium', 'hard'].forEach(level => {
+        const lbl = document.createElement('label');
+        lbl.className = 'difficulty-option';
+
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'gameover-difficulty';
+        radio.value = level;
+        if (level === currentDifficulty) radio.checked = true;
+
+        const span = document.createElement('span');
+        span.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+
+        lbl.appendChild(radio);
+        lbl.appendChild(span);
+        options.appendChild(lbl);
+    });
+
+    wrapper.appendChild(options);
+    return wrapper;
+}
+
 function showGameOverScreen(winner) {
     playerTurnLocked = true;
     stopRadar();
@@ -286,10 +320,15 @@ function showGameOverScreen(winner) {
         ? 'You destroyed the entire enemy fleet.'
         : 'Your fleet has been destroyed.';
 
+    const difficultySelector = buildDifficultySelector(controller.difficulty);
+
     const btn = document.createElement('button');
     btn.className = 'setup-btn';
     btn.textContent = 'Play Again';
     btn.addEventListener('click', async () => {
+        const checked = box.querySelector('input[name="gameover-difficulty"]:checked');
+        if (checked) controller.setDifficulty(checked.value);
+
         overlay.remove();
         controller.resetGame();
         playerTurnLocked = false;
@@ -303,6 +342,7 @@ function showGameOverScreen(winner) {
 
     box.appendChild(title);
     box.appendChild(subtitle);
+    box.appendChild(difficultySelector);
     box.appendChild(btn);
     overlay.appendChild(box);
     document.body.appendChild(overlay);
