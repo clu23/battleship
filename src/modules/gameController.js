@@ -1,5 +1,6 @@
 import Game from './factories/game.js';
 import Ship from './factories/ship.js';
+import AI from './factories/ai.js';
 
 const SHIPS_TO_PLACE = [
     { name: 'Carrier', size: 5 },
@@ -15,6 +16,13 @@ class GameController {
         this.phase = 'setup';
         this.orientation = 'X';
         this.placedShipsCount = 0;
+        this.difficulty = 'medium';
+        this.ai = new AI(this.difficulty);
+    }
+
+    setDifficulty(level) {
+        this.difficulty = level;
+        this.ai = new AI(level);
     }
 
     getShipsToPlace() {
@@ -74,14 +82,10 @@ class GameController {
     computerTurn() {
         if (this.phase !== 'battle' || this.game.currentTurn !== 'computer') return null;
 
-        let row, col;
-        do {
-            row = Math.floor(Math.random() * 10);
-            col = Math.floor(Math.random() * 10);
-        } while (this.game.computer.alreadyHit(row, col));
-
+        const { row, col } = this.ai.getNextMove();
         this.game.computer.hitCoords.push([row, col]);
         const result = this.game.playerBoard.takeHit(row, col);
+        this.ai.recordResult(row, col, result);
         this.game.switchTurn();
         return { row, col, ...result };
     }
@@ -109,6 +113,7 @@ class GameController {
         this.phase = 'setup';
         this.orientation = 'X';
         this.placedShipsCount = 0;
+        this.ai.reset();
     }
 }
 

@@ -29,6 +29,11 @@ class Display {
             controller.game.setPlayerName(`Captain ${name}`);
         }
 
+        const difficultyInput = document.querySelector('input[name="difficulty"]:checked');
+        if (difficultyInput) {
+            controller.setDifficulty(difficultyInput.value);
+        }
+
         const welcomeScreen = document.getElementById('welcome-screen');
         welcomeScreen.classList.add('hidden');
 

@@ -119,6 +119,65 @@ input::placeholder {
     font-family: 'Montserrat', sans-serif;
 }
 
+/* ===================== DIFFICULTY SELECTOR ===================== */
+
+.difficulty-selector {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.difficulty-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #8a9bb8;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.difficulty-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.difficulty-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-family: 'Big Shoulders Stencil Text', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8a9bb8;
+    padding: 7px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(60, 100, 160, 0.25);
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.difficulty-option:hover {
+    color: #d4a843;
+    border-color: rgba(212, 168, 67, 0.5);
+    background: rgba(212, 168, 67, 0.05);
+}
+
+.difficulty-option input[type="radio"] {
+    display: none;
+    margin: 0;
+}
+
+.difficulty-option:has(input:checked) {
+    color: #d4a843;
+    border-color: rgba(212, 168, 67, 0.7);
+    background: rgba(212, 168, 67, 0.1);
+}
+
 #play-button {
     font-size: 28px;
     font-weight: 700;
