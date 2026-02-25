@@ -63,7 +63,6 @@ class GameController {
     }
 
     resetPlacement() {
-        const name = this.game.player.name;
         this.game.playerBoard = new (this.game.playerBoard.constructor)();
         this.placedShipsCount = 0;
         this.orientation = 'X';

@@ -1,5 +1,4 @@
 import GameController from '../gameController.js';
-import Ship from '../factories/ship.js';
 
 describe('GameController', () => {
     let gc;

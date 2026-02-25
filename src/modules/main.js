@@ -1,6 +1,6 @@
 import Sound from './utils/sound.js';
 import Display from './DOM/display.js';
-import { toggleSfxMute, isSfxMuted } from './utils/sfx.js';
+import { toggleSfxMute } from './utils/sfx.js';
 
 const sound = new Sound();
 const display = new Display();

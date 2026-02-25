@@ -173,7 +173,7 @@ function onDragOver(e) {
 
     const row = parseInt(cell.dataset.row, 10);
     const col = parseInt(cell.dataset.col, 10);
-    const { name, size } = draggedShipData;
+    const { size } = draggedShipData;
     const orientation = controller.orientation;
 
     const possible = controller.game.playerBoard.isPlacementPossible(
@@ -249,7 +249,7 @@ function clearPreview() {
 
 function renderShipOnGrid(name, size, row, col, orientation) {
     const cells = getCellsForShip(row, col, size, orientation);
-    cells.forEach((cell, i) => {
+    cells.forEach((cell, _i) => {
         if (!cell) return;
         cell.classList.add('ship-placed');
         cell.dataset.shipName = name;

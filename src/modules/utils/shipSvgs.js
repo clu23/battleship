@@ -108,7 +108,7 @@ const svgTemplates = {
     },
 };
 
-function getSvg(shipName, size, orientation) {
+function getSvg(shipName, size, _orientation) {
     const w = size * CELL_SIZE;
     const h = CELL_SIZE;
     const template = svgTemplates[shipName];

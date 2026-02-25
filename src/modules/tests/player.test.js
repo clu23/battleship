@@ -2,8 +2,6 @@ import GameBoard from '../factories/gameboard.js'
 import Ship from '../factories/ship.js'
 import Player from '../factories/player.js'
 
-const SIZE=10;
-
 describe('Player', () => {
     let player;
     let gameboard;

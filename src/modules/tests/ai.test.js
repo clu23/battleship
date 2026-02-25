@@ -91,7 +91,7 @@ describe('AI — Medium', () => {
         const ai = new AI('medium');
         // Force first move to (5,5) by pre-filling the search order
         ai._searchOrder = [{ row: 5, col: 5 }];
-        const m = ai.getNextMove();             // (5,5)
+        ai.getNextMove();                       // (5,5)
         ai.recordResult(5, 5, hit(false));
 
         // Valid adjacent cells to (5,5): up(4,5) down(6,5) left(5,4) right(5,6)
@@ -107,13 +107,13 @@ describe('AI — Medium', () => {
 
         // First hit at (3, 3)
         ai._searchOrder = [{ row: 3, col: 3 }];
-        let m = ai.getNextMove();
+        ai.getNextMove();
         ai.recordResult(3, 3, hit(false));
         expect(ai.huntDirection).toBeNull();
 
         // Force next hunt move to (3,4) — right of first hit
         ai.huntQueue = [{ row: 3, col: 4 }];
-        m = ai.getNextMove();
+        ai.getNextMove();
         ai.recordResult(3, 4, hit(false));
 
         expect(ai.huntDirection).toBe('H');
