@@ -1,219 +1,253 @@
 import support from './support.js';
 import { getSvg, CELL_SIZE } from '../utils/shipSvgs.js';
 import { playAttackSequence } from '../utils/sfx.js';
-import { createPanel, updatePlayerPanel, updateEnemyPanel } from './scorePanel.js';
+import {
+  createPanel,
+  updatePlayerPanel,
+  updateEnemyPanel,
+} from './scorePanel.js';
 
 let controller = null;
 let playerTurnLocked = false;
 
 function init(gameController) {
-    controller = gameController;
-    loadBattleContent();
+  controller = gameController;
+  loadBattleContent();
 }
 
 function loadBattleContent() {
-    const contentLeft = document.getElementById('content-left');
-    contentLeft.innerHTML = '';
+  const contentLeft = document.getElementById('content-left');
+  contentLeft.innerHTML = '';
 
-    const leftSection = document.createElement('div');
-    leftSection.className = 'battle-section';
+  const leftSection = document.createElement('div');
+  leftSection.className = 'battle-section';
 
-    const leftTitle = document.createElement('h2');
-    leftTitle.className = 'board-title';
-    leftTitle.textContent = 'Your Fleet';
-    leftSection.appendChild(leftTitle);
+  const leftTitle = document.createElement('h2');
+  leftTitle.className = 'board-title';
+  leftTitle.textContent = 'Your Fleet';
+  leftSection.appendChild(leftTitle);
 
-    const playerMap = support.createMap('player');
-    leftSection.appendChild(playerMap);
-    leftSection.appendChild(createPanel('Your Fleet'));
+  const playerMap = support.createMap('player');
+  leftSection.appendChild(playerMap);
+  leftSection.appendChild(createPanel('Your Fleet'));
 
-    showMessage('Your turn \u2014 fire at the enemy grid!');
+  showMessage('Your turn \u2014 fire at the enemy grid!');
 
-    contentLeft.appendChild(leftSection);
+  contentLeft.appendChild(leftSection);
 
-    renderPlayerShipOverlays();
-    addRadarOverlay('field-container-player');
+  renderPlayerShipOverlays();
+  addRadarOverlay('field-container-player');
 
-    const contentRight = document.getElementById('content-right');
-    contentRight.innerHTML = '';
+  const contentRight = document.getElementById('content-right');
+  contentRight.innerHTML = '';
 
-    const rightSection = document.createElement('div');
-    rightSection.className = 'battle-section';
+  const rightSection = document.createElement('div');
+  rightSection.className = 'battle-section';
 
-    const rightTitle = document.createElement('h2');
-    rightTitle.className = 'board-title';
-    rightTitle.textContent = 'Enemy Waters';
-    rightSection.appendChild(rightTitle);
+  const rightTitle = document.createElement('h2');
+  rightTitle.className = 'board-title';
+  rightTitle.textContent = 'Enemy Waters';
+  rightSection.appendChild(rightTitle);
 
-    const computerMap = support.createMap('computer');
-    rightSection.appendChild(computerMap);
-    rightSection.appendChild(createPanel('Enemy Fleet'));
+  const computerMap = support.createMap('computer');
+  rightSection.appendChild(computerMap);
+  rightSection.appendChild(createPanel('Enemy Fleet'));
 
-    contentRight.appendChild(rightSection);
+  contentRight.appendChild(rightSection);
 
-    addRadarOverlay('field-container-computer');
-    initAttackListeners();
+  addRadarOverlay('field-container-computer');
+  initAttackListeners();
 }
 
 function renderPlayerShipOverlays() {
-    const container = document.getElementById('field-container-player');
-    if (!container) return;
+  const container = document.getElementById('field-container-player');
+  if (!container) return;
 
-    const placements = controller.game.playerBoard.placements;
-    placements.forEach(p => {
-        renderShipOverlay(container, p.ship.name, p.ship.size, p.row, p.column, p.orientation);
-    });
+  const placements = controller.game.playerBoard.placements;
+  placements.forEach((p) => {
+    renderShipOverlay(
+      container,
+      p.ship.name,
+      p.ship.size,
+      p.row,
+      p.column,
+      p.orientation
+    );
+  });
 }
 
 function renderShipOverlay(container, name, size, row, col, orientation) {
-    const overlay = document.createElement('div');
-    overlay.className = 'ship-overlay battle-ship-overlay';
-    overlay.dataset.shipName = name;
+  const overlay = document.createElement('div');
+  overlay.className = 'ship-overlay battle-ship-overlay';
+  overlay.dataset.shipName = name;
 
-    const widthCells = orientation === 'X' ? size : 1;
-    const heightCells = orientation === 'Y' ? size : 1;
+  const widthCells = orientation === 'X' ? size : 1;
+  const heightCells = orientation === 'Y' ? size : 1;
 
-    overlay.style.left = `${col * CELL_SIZE}px`;
-    overlay.style.top = `${row * CELL_SIZE}px`;
-    overlay.style.width = `${widthCells * CELL_SIZE}px`;
-    overlay.style.height = `${heightCells * CELL_SIZE}px`;
+  overlay.style.left = `${col * CELL_SIZE}px`;
+  overlay.style.top = `${row * CELL_SIZE}px`;
+  overlay.style.width = `${widthCells * CELL_SIZE}px`;
+  overlay.style.height = `${heightCells * CELL_SIZE}px`;
 
-    const svgWrap = document.createElement('div');
-    svgWrap.className = 'ship-overlay-svg';
-    if (orientation === 'Y') {
-        svgWrap.classList.add('rotated');
-        svgWrap.style.width = `${size * CELL_SIZE}px`;
-        svgWrap.style.height = `${CELL_SIZE}px`;
-    }
-    svgWrap.innerHTML = getSvg(name, size, orientation);
-    overlay.appendChild(svgWrap);
+  const svgWrap = document.createElement('div');
+  svgWrap.className = 'ship-overlay-svg';
+  if (orientation === 'Y') {
+    svgWrap.classList.add('rotated');
+    svgWrap.style.width = `${size * CELL_SIZE}px`;
+    svgWrap.style.height = `${CELL_SIZE}px`;
+  }
+  svgWrap.innerHTML = getSvg(name, size, orientation);
+  overlay.appendChild(svgWrap);
 
-    container.appendChild(overlay);
+  container.appendChild(overlay);
 }
 
 function renderSunkEnemyShip(shipData) {
-    const container = document.getElementById('field-container-computer');
-    if (!container) return;
+  const container = document.getElementById('field-container-computer');
+  if (!container) return;
 
-    // Only render if not already rendered
-    if (container.querySelector(`.ship-overlay[data-ship-name="${shipData.name}"]`)) return;
+  // Only render if not already rendered
+  if (
+    container.querySelector(`.ship-overlay[data-ship-name="${shipData.name}"]`)
+  )
+    return;
 
-    renderShipOverlay(container, shipData.name, shipData.size, shipData.row, shipData.col, shipData.orientation);
+  renderShipOverlay(
+    container,
+    shipData.name,
+    shipData.size,
+    shipData.row,
+    shipData.col,
+    shipData.orientation
+  );
 }
 
 function addRadarOverlay(containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
-    const radar = document.createElement('div');
-    radar.className = 'radar-sweep';
-    container.appendChild(radar);
+  const radar = document.createElement('div');
+  radar.className = 'radar-sweep';
+  container.appendChild(radar);
 }
 
 function stopRadar() {
-    document.querySelectorAll('.radar-sweep').forEach(el => {
-        el.classList.add('radar-stopped');
-    });
+  document.querySelectorAll('.radar-sweep').forEach((el) => {
+    el.classList.add('radar-stopped');
+  });
 }
 
 function initAttackListeners() {
-    const container = document.getElementById('field-container-computer');
-    if (!container) return;
+  const container = document.getElementById('field-container-computer');
+  if (!container) return;
 
-    container.addEventListener('click', onCellClick);
+  container.addEventListener('click', onCellClick);
 }
 
 function onCellClick(e) {
-    const cell = e.target.closest('.field');
-    if (!cell || playerTurnLocked) return;
-    if (controller.phase !== 'battle' || controller.game.currentTurn !== 'player') return;
+  const cell = e.target.closest('.field');
+  if (!cell || playerTurnLocked) return;
+  if (controller.phase !== 'battle' || controller.game.currentTurn !== 'player')
+    return;
 
-    const row = parseInt(cell.dataset.row, 10);
-    const col = parseInt(cell.dataset.col, 10);
+  const row = parseInt(cell.dataset.row, 10);
+  const col = parseInt(cell.dataset.col, 10);
 
-    if (controller.game.player.alreadyHit(row, col)) return;
+  if (controller.game.player.alreadyHit(row, col)) return;
 
-    const result = controller.playerAttack(row, col);
-    if (!result || result.result === 'already') return;
+  const result = controller.playerAttack(row, col);
+  if (!result || result.result === 'already') return;
 
-    playerTurnLocked = true;
+  playerTurnLocked = true;
 
-    // Visual + message immediately
-    applyCellResult(cell, result);
-    updateEnemyPanel(result);
+  // Visual + message immediately
+  applyCellResult(cell, result);
+  updateEnemyPanel(result);
 
-    if (result.result === 'hit' && result.sunk) {
-        const sunkPositions = controller.getSunkShipPositions(controller.game.computerBoard);
-        const sunkShip = sunkPositions.find(s => s.name === result.ship.name);
-        if (sunkShip) renderSunkEnemyShip(sunkShip);
-    }
+  if (result.result === 'hit' && result.sunk) {
+    const sunkPositions = controller.getSunkShipPositions(
+      controller.game.computerBoard
+    );
+    const sunkShip = sunkPositions.find((s) => s.name === result.ship.name);
+    if (sunkShip) renderSunkEnemyShip(sunkShip);
+  }
 
-    const winner = controller.checkGameOver();
-    if (winner) {
-        showMessage(winner === 'player' ? 'Victory! You sank the entire enemy fleet!' : 'Defeat! Your fleet has been sunk!');
-        showGameOverScreen(winner);
-        return;
-    }
+  const winner = controller.checkGameOver();
+  if (winner) {
+    showMessage(
+      winner === 'player'
+        ? 'Victory! You sank the entire enemy fleet!'
+        : 'Defeat! Your fleet has been sunk!'
+    );
+    showGameOverScreen(winner);
+    return;
+  }
 
-    if (result.result === 'hit' && result.sunk) {
-        showMessage(`You sank their ${result.ship.name}!`);
-    } else if (result.result === 'hit') {
-        showMessage('Hit!');
-    } else {
-        showMessage('Miss...');
-    }
+  if (result.result === 'hit' && result.sunk) {
+    showMessage(`You sank their ${result.ship.name}!`);
+  } else if (result.result === 'hit') {
+    showMessage('Hit!');
+  } else {
+    showMessage('Miss...');
+  }
 
-    // Sound sequence in parallel, computer turn after it ends
-    playAttackSequence(result).then(() => {
-        setTimeout(() => doComputerTurn(), 500);
-    });
+  // Sound sequence in parallel, computer turn after it ends
+  playAttackSequence(result).then(() => {
+    setTimeout(() => doComputerTurn(), 500);
+  });
 }
 
 function doComputerTurn() {
-    const result = controller.computerTurn();
-    if (!result) {
-        playerTurnLocked = false;
-        return;
+  const result = controller.computerTurn();
+  if (!result) {
+    playerTurnLocked = false;
+    return;
+  }
+
+  // Visual + message immediately
+  const container = document.getElementById('field-container-player');
+  if (container) {
+    const cell = container.querySelector(
+      `.field[data-row="${result.row}"][data-col="${result.col}"]`
+    );
+    if (cell) {
+      applyCellResult(cell, result);
     }
+  }
 
-    // Visual + message immediately
-    const container = document.getElementById('field-container-player');
-    if (container) {
-        const cell = container.querySelector(`.field[data-row="${result.row}"][data-col="${result.col}"]`);
-        if (cell) {
-            applyCellResult(cell, result);
-        }
-    }
+  updatePlayerPanel(controller.game.playerBoard);
 
-    updatePlayerPanel(controller.game.playerBoard);
+  const winner = controller.checkGameOver();
+  if (winner) {
+    showMessage(
+      winner === 'player'
+        ? 'Victory! You sank the entire enemy fleet!'
+        : 'Defeat! Your fleet has been sunk!'
+    );
+    showGameOverScreen(winner);
+    return;
+  }
 
-    const winner = controller.checkGameOver();
-    if (winner) {
-        showMessage(winner === 'player' ? 'Victory! You sank the entire enemy fleet!' : 'Defeat! Your fleet has been sunk!');
-        showGameOverScreen(winner);
-        return;
-    }
+  if (result.result === 'hit' && result.sunk) {
+    showMessage(`Enemy sank your ${result.ship.name}! Your turn.`);
+  } else if (result.result === 'hit') {
+    showMessage('Enemy hit your ship! Your turn.');
+  } else {
+    showMessage('Enemy missed. Your turn!');
+  }
 
-    if (result.result === 'hit' && result.sunk) {
-        showMessage(`Enemy sank your ${result.ship.name}! Your turn.`);
-    } else if (result.result === 'hit') {
-        showMessage('Enemy hit your ship! Your turn.');
-    } else {
-        showMessage('Enemy missed. Your turn!');
-    }
-
-    // Unlock clicks after sound sequence ends
-    playAttackSequence(result).then(() => {
-        playerTurnLocked = false;
-    });
+  // Unlock clicks after sound sequence ends
+  playAttackSequence(result).then(() => {
+    playerTurnLocked = false;
+  });
 }
 
 function applyCellResult(cell, result) {
-    if (result.result === 'hit') {
-        cell.classList.add('cell-hit');
-    } else {
-        cell.classList.add('cell-miss');
-    }
+  if (result.result === 'hit') {
+    cell.classList.add('cell-hit');
+  } else {
+    cell.classList.add('cell-miss');
+  }
 }
 
 let typewriterTimer = null;
@@ -221,131 +255,134 @@ let typewriterFadeTimer = null;
 let typewriterEl = null;
 
 function ensureTypewriterZone() {
-    let zone = document.querySelector('.typewriter-zone');
-    if (!zone) {
-        zone = document.createElement('div');
-        zone.className = 'typewriter-zone';
-        document.body.appendChild(zone);
-    }
-    return zone;
+  let zone = document.querySelector('.typewriter-zone');
+  if (!zone) {
+    zone = document.createElement('div');
+    zone.className = 'typewriter-zone';
+    document.body.appendChild(zone);
+  }
+  return zone;
 }
 
 function showMessage(text) {
-    // Clear any running typewriter
-    if (typewriterTimer) clearInterval(typewriterTimer);
-    if (typewriterFadeTimer) clearTimeout(typewriterFadeTimer);
+  // Clear any running typewriter
+  if (typewriterTimer) clearInterval(typewriterTimer);
+  if (typewriterFadeTimer) clearTimeout(typewriterFadeTimer);
 
-    const zone = ensureTypewriterZone();
+  const zone = ensureTypewriterZone();
 
-    // Remove old message immediately
-    if (typewriterEl) typewriterEl.remove();
+  // Remove old message immediately
+  if (typewriterEl) typewriterEl.remove();
 
-    const msg = document.createElement('div');
-    msg.className = 'typewriter-msg';
-    msg.textContent = '';
-    zone.appendChild(msg);
-    typewriterEl = msg;
+  const msg = document.createElement('div');
+  msg.className = 'typewriter-msg';
+  msg.textContent = '';
+  zone.appendChild(msg);
+  typewriterEl = msg;
 
-    let i = 0;
-    typewriterTimer = setInterval(() => {
-        msg.textContent += text[i];
-        i++;
-        if (i >= text.length) {
-            clearInterval(typewriterTimer);
-            typewriterTimer = null;
+  let i = 0;
+  typewriterTimer = setInterval(() => {
+    msg.textContent += text[i];
+    i++;
+    if (i >= text.length) {
+      clearInterval(typewriterTimer);
+      typewriterTimer = null;
 
-            // Stay 2 seconds then fade out
-            typewriterFadeTimer = setTimeout(() => {
-                msg.classList.add('fadeout');
-                typewriterFadeTimer = setTimeout(() => {
-                    msg.remove();
-                    if (typewriterEl === msg) typewriterEl = null;
-                }, 600);
-            }, 2000);
-        }
-    }, 40);
+      // Stay 2 seconds then fade out
+      typewriterFadeTimer = setTimeout(() => {
+        msg.classList.add('fadeout');
+        typewriterFadeTimer = setTimeout(() => {
+          msg.remove();
+          if (typewriterEl === msg) typewriterEl = null;
+        }, 600);
+      }, 2000);
+    }
+  }, 40);
 }
 
 function buildDifficultySelector(currentDifficulty) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'gameover-difficulty';
+  const wrapper = document.createElement('div');
+  wrapper.className = 'gameover-difficulty';
 
-    const label = document.createElement('span');
-    label.className = 'difficulty-label';
-    label.textContent = 'Difficulty';
-    wrapper.appendChild(label);
+  const label = document.createElement('span');
+  label.className = 'difficulty-label';
+  label.textContent = 'Difficulty';
+  wrapper.appendChild(label);
 
-    const options = document.createElement('div');
-    options.className = 'difficulty-options';
+  const options = document.createElement('div');
+  options.className = 'difficulty-options';
 
-    ['easy', 'medium', 'hard'].forEach(level => {
-        const lbl = document.createElement('label');
-        lbl.className = 'difficulty-option';
+  ['easy', 'medium', 'hard'].forEach((level) => {
+    const lbl = document.createElement('label');
+    lbl.className = 'difficulty-option';
 
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = 'gameover-difficulty';
-        radio.value = level;
-        if (level === currentDifficulty) radio.checked = true;
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = 'gameover-difficulty';
+    radio.value = level;
+    if (level === currentDifficulty) radio.checked = true;
 
-        const span = document.createElement('span');
-        span.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+    const span = document.createElement('span');
+    span.textContent = level.charAt(0).toUpperCase() + level.slice(1);
 
-        lbl.appendChild(radio);
-        lbl.appendChild(span);
-        options.appendChild(lbl);
-    });
+    lbl.appendChild(radio);
+    lbl.appendChild(span);
+    options.appendChild(lbl);
+  });
 
-    wrapper.appendChild(options);
-    return wrapper;
+  wrapper.appendChild(options);
+  return wrapper;
 }
 
 function showGameOverScreen(winner) {
-    playerTurnLocked = true;
-    stopRadar();
+  playerTurnLocked = true;
+  stopRadar();
 
-    const overlay = document.createElement('div');
-    overlay.className = 'gameover-overlay';
+  const overlay = document.createElement('div');
+  overlay.className = 'gameover-overlay';
 
-    const box = document.createElement('div');
-    box.className = 'gameover-box';
+  const box = document.createElement('div');
+  box.className = 'gameover-box';
 
-    const title = document.createElement('h2');
-    title.className = 'gameover-title';
-    title.textContent = winner === 'player' ? 'Victory!' : 'Defeat!';
+  const title = document.createElement('h2');
+  title.className = 'gameover-title';
+  title.textContent = winner === 'player' ? 'Victory!' : 'Defeat!';
 
-    const subtitle = document.createElement('p');
-    subtitle.className = 'gameover-subtitle';
-    subtitle.textContent = winner === 'player'
-        ? 'You destroyed the entire enemy fleet.'
-        : 'Your fleet has been destroyed.';
+  const subtitle = document.createElement('p');
+  subtitle.className = 'gameover-subtitle';
+  subtitle.textContent =
+    winner === 'player'
+      ? 'You destroyed the entire enemy fleet.'
+      : 'Your fleet has been destroyed.';
 
-    const difficultySelector = buildDifficultySelector(controller.difficulty);
+  const difficultySelector = buildDifficultySelector(controller.difficulty);
 
-    const btn = document.createElement('button');
-    btn.className = 'setup-btn';
-    btn.textContent = 'Play Again';
-    btn.addEventListener('click', async () => {
-        const checked = box.querySelector('input[name="gameover-difficulty"]:checked');
-        if (checked) controller.setDifficulty(checked.value);
+  const btn = document.createElement('button');
+  btn.className = 'setup-btn';
+  btn.textContent = 'Play Again';
+  btn.addEventListener('click', async () => {
+    const checked = box.querySelector(
+      'input[name="gameover-difficulty"]:checked'
+    );
+    if (checked) controller.setDifficulty(checked.value);
 
-        overlay.remove();
-        controller.resetGame();
-        playerTurnLocked = false;
+    overlay.remove();
+    controller.resetGame();
+    playerTurnLocked = false;
 
-        const contentRight = document.getElementById('content-right');
-        contentRight.innerHTML = '';
+    const contentRight = document.getElementById('content-right');
+    contentRight.innerHTML = '';
 
-        const setup = await import('./setup.js');
-        setup.default.init(controller);
-    });
+    const setup = await import('./setup.js');
+    setup.default.init(controller);
+  });
 
-    box.appendChild(title);
-    box.appendChild(subtitle);
-    box.appendChild(difficultySelector);
-    box.appendChild(btn);
-    overlay.appendChild(box);
-    document.body.appendChild(overlay);
+  box.appendChild(title);
+  box.appendChild(subtitle);
+  box.appendChild(difficultySelector);
+  box.appendChild(btn);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
 }
 
 export default { init };

@@ -1,8 +1,8 @@
 const CELL_SIZE = 36;
 
 const svgTemplates = {
-    Carrier(w, h) {
-        return `
+  Carrier(w, h) {
+    return `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
             <!-- Hull -->
             <rect x="2" y="4" width="${w - 4}" height="${h - 8}" rx="6" ry="6" fill="#4a4a4a" stroke="#333" stroke-width="1.5"/>
@@ -25,10 +25,10 @@ const svgTemplates = {
                 <rect x="70" y="${h / 2 + 2}" width="10" height="4" rx="1"/>
             </g>
         </svg>`;
-    },
+  },
 
-    Battleship(w, h) {
-        return `
+  Battleship(w, h) {
+    return `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
             <!-- Hull -->
             <path d="M 8,${h / 2} Q 2,${h / 2} 4,${h / 2 - 8} L 10,${h / 2 - 10} L ${w - 10},${h / 2 - 10} Q ${w - 2},${h / 2 - 8} ${w - 2},${h / 2} Q ${w - 2},${h / 2 + 8} ${w - 10},${h / 2 + 10} L 10,${h / 2 + 10} Q 2,${h / 2 + 8} 4,${h / 2 + 8} Z" fill="#5a6a7a" stroke="#3a4a5a" stroke-width="1.5"/>
@@ -47,10 +47,10 @@ const svgTemplates = {
             <!-- Bow -->
             <polygon points="4,${h / 2} 10,${h / 2 - 6} 10,${h / 2 + 6}" fill="#5a6a7a" stroke="#3a4a5a" stroke-width="0.5"/>
         </svg>`;
-    },
+  },
 
-    Destroyer(w, h) {
-        return `
+  Destroyer(w, h) {
+    return `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
             <!-- Hull - sleek -->
             <path d="M 4,${h / 2} L 10,${h / 2 - 8} L ${w - 8},${h / 2 - 8} Q ${w - 2},${h / 2 - 4} ${w - 2},${h / 2} Q ${w - 2},${h / 2 + 4} ${w - 8},${h / 2 + 8} L 10,${h / 2 + 8} Z" fill="#5a6b4a" stroke="#3a4b2a" stroke-width="1.5"/>
@@ -65,10 +65,10 @@ const svgTemplates = {
             <!-- Bow point -->
             <polygon points="4,${h / 2} 10,${h / 2 - 5} 10,${h / 2 + 5}" fill="#5a6b4a"/>
         </svg>`;
-    },
+  },
 
-    Submarine(w, h) {
-        return `
+  Submarine(w, h) {
+    return `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
             <!-- Hull - rounded -->
             <ellipse cx="${w / 2}" cy="${h / 2}" rx="${w / 2 - 3}" ry="${h / 2 - 6}" fill="#2a2a2a" stroke="#1a1a1a" stroke-width="1.5"/>
@@ -87,10 +87,10 @@ const svgTemplates = {
             <line x1="18" y1="${h / 2}" x2="${w / 2 - 12}" y2="${h / 2}" stroke="#333" stroke-width="0.8"/>
             <line x1="${w / 2 + 12}" y1="${h / 2}" x2="${w - 18}" y2="${h / 2}" stroke="#333" stroke-width="0.8"/>
         </svg>`;
-    },
+  },
 
-    PatrolBoat(w, h) {
-        return `
+  PatrolBoat(w, h) {
+    return `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
             <!-- Hull - small and fast -->
             <path d="M 4,${h / 2} L 8,${h / 2 - 7} L ${w - 6},${h / 2 - 7} Q ${w - 2},${h / 2 - 3} ${w - 2},${h / 2} Q ${w - 2},${h / 2 + 3} ${w - 6},${h / 2 + 7} L 8,${h / 2 + 7} Z" fill="#d4cfc4" stroke="#aaa48e" stroke-width="1.5"/>
@@ -105,15 +105,15 @@ const svgTemplates = {
             <line x1="${w - 4}" y1="${h / 2 - 4}" x2="${w + 2}" y2="${h / 2 - 6}" stroke="#aaa48e" stroke-width="0.5" opacity="0.5"/>
             <line x1="${w - 4}" y1="${h / 2 + 4}" x2="${w + 2}" y2="${h / 2 + 6}" stroke="#aaa48e" stroke-width="0.5" opacity="0.5"/>
         </svg>`;
-    },
+  },
 };
 
 function getSvg(shipName, size, _orientation) {
-    const w = size * CELL_SIZE;
-    const h = CELL_SIZE;
-    const template = svgTemplates[shipName];
-    if (!template) return '';
-    return template(w, h);
+  const w = size * CELL_SIZE;
+  const h = CELL_SIZE;
+  const template = svgTemplates[shipName];
+  if (!template) return '';
+  return template(w, h);
 }
 
 export { getSvg, CELL_SIZE };

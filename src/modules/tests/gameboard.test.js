@@ -1,132 +1,134 @@
-import GameBoard from '../factories/gameboard.js'
-import Ship from '../factories/ship.js'
+import GameBoard from '../factories/gameboard.js';
+import Ship from '../factories/ship.js';
 
-const SIZE=10;
+const SIZE = 10;
 
-describe("Gameboard", () => {
-    let gameboard;
-    let ship;
-    let testBoard;
-    let testMissedShots;
+describe('Gameboard', () => {
+  let gameboard;
+  let ship;
+  let testBoard;
+  let testMissedShots;
 
-    beforeEach(() => {
-        gameboard = new GameBoard();
-        ship =  new Ship(3,'test_ship');
-        testBoard=[];
-        testMissedShots = [];
+  beforeEach(() => {
+    gameboard = new GameBoard();
+    ship = new Ship(3, 'test_ship');
+    testBoard = [];
+    testMissedShots = [];
 
-        for (let i = 0; i < SIZE; i++) {
-            testBoard[i] = []
-            testMissedShots[i] = []
-            for (let j = 0; j < SIZE; j++) {
-              testBoard[i][j] = 'x'
-              testMissedShots[i][j] = false
-            }
-        }
-    })
-
-    test('create and initialize a gameboard', () => {
-        expect(gameboard).toEqual({ board: testBoard,
-                                    missedShots: testMissedShots,
-                                    placeMode: 'X',
-                                    fleet: [],
-                                    placements: []})
-    })
-
-    test('place a ship', () => {
-        gameboard.placeShip(ship, 1, 1, 'X')
-        testBoard[1][1] = ship
-        testBoard[1][2] = ship
-        testBoard[1][3] = ship
-        expect(gameboard).toEqual({
-            board: testBoard,
-            missedShots: testMissedShots,
-            placeMode: 'X',
-            fleet: [ship],
-            placements: [{ ship, row: 1, column: 1, orientation: 'X' }]})
-    })
-
-    test('change placement mode', () => {
-        gameboard.rotate()
-        expect(gameboard).toEqual({
-            board: testBoard,
-            missedShots: testMissedShots,
-            placeMode: 'Y',
-            fleet: [],
-            placements: []})
-    })
-
-    test('place 5 ships randomly', () => {
-        gameboard.placeShipsRandomly()
-        expect(gameboard.getFreeCells()).toBe(83)
-    })
-
-    test('prevent ship placement outside gameboard', () => {
-        expect(gameboard.isPlacementPossible(ship, 8, 8, 'X')).toBe(false)
-        expect(gameboard.isPlacementPossible(ship, 10, 10, 'X')).toBe(false)
-    })
-
-    test('prevent ship placement on taken fields', () => {
-        gameboard.placeShip(ship,1,1,'X')
-        expect(gameboard.isPlacementPossible(ship, 1, 1, 'Y')).toBe(false)
-        expect(gameboard.isPlacementPossible(ship, 1, 2, 'X')).toBe(false)
-        expect(gameboard.isPlacementPossible(ship, 1, 3, 'Y')).toBe(false)
-    })
-
-    test('prevent ship placement in direct neighbourhood of taken fields', () => {
-        gameboard.placeShip(ship,1,1,'X')
-        expect(gameboard.isPlacementPossible(ship, 0, 0, 'X')).toBe(false)
-        expect(gameboard.isPlacementPossible(ship, 2, 1, 'X')).toBe(false)
-        expect(gameboard.isPlacementPossible(ship, 1, 4, 'Y')).toBe(false)
-        expect(gameboard.isPlacementPossible(ship, 3, 3, 'Y')).toBe(true)
-    })
-
-    test('receive attacks', () => {
-        gameboard.placeShip(ship, 1, 1, 'X')
-        const hitResult = gameboard.takeHit(1, 3)
-        expect(hitResult).toEqual({ result: 'hit', ship: ship, sunk: false })
-        expect(gameboard.board[1][3]).toBe('hit')
-        expect(ship.hits).toBe(1)
-    })
-
-    test('keep track of missed shots', () => {
-        gameboard.placeShip(ship, 1, 1, 'X')
-        const missResult = gameboard.takeHit(1, 4)
-        expect(missResult).toEqual({ result: 'miss' })
-        expect(gameboard.board[1][4]).toBe('miss')
-        expect(gameboard.missedShots[1][4]).toBe(true)
-    })
-
-    test('return already when hitting same cell twice', () => {
-        gameboard.placeShip(ship, 1, 1, 'X')
-        gameboard.takeHit(1, 1)
-        const alreadyResult = gameboard.takeHit(1, 1)
-        expect(alreadyResult).toEqual({ result: 'already' })
-    })
-
-    test('return sunk true when last hit sinks a ship', () => {
-        gameboard.placeShip(ship, 1, 1, 'X')
-        gameboard.takeHit(1, 1)
-        gameboard.takeHit(1, 2)
-        const sunkResult = gameboard.takeHit(1, 3)
-        expect(sunkResult).toEqual({ result: 'hit', ship: ship, sunk: true })
-    })
-
-    test('is game over', () => {
-        expect(gameboard.isGameOver()).toBe(false)
-    
-        gameboard.placeShip(ship, 1, 1, 'X')
-        expect(gameboard.isGameOver()).toBe(false)
-        gameboard.takeHit(1, 1)
-        gameboard.takeHit(1, 2)
-        gameboard.takeHit(1, 3)
-    
-        gameboard.placeShip(new Ship(3), 5, 5, 'X')
-        gameboard.takeHit(5, 5)
-        gameboard.takeHit(5, 6)
-        gameboard.takeHit(5, 7)
-        expect(gameboard.isGameOver()).toBe(true)
-    })
-
+    for (let i = 0; i < SIZE; i++) {
+      testBoard[i] = [];
+      testMissedShots[i] = [];
+      for (let j = 0; j < SIZE; j++) {
+        testBoard[i][j] = 'x';
+        testMissedShots[i][j] = false;
+      }
+    }
   });
 
+  test('create and initialize a gameboard', () => {
+    expect(gameboard).toEqual({
+      board: testBoard,
+      missedShots: testMissedShots,
+      placeMode: 'X',
+      fleet: [],
+      placements: [],
+    });
+  });
+
+  test('place a ship', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    testBoard[1][1] = ship;
+    testBoard[1][2] = ship;
+    testBoard[1][3] = ship;
+    expect(gameboard).toEqual({
+      board: testBoard,
+      missedShots: testMissedShots,
+      placeMode: 'X',
+      fleet: [ship],
+      placements: [{ ship, row: 1, column: 1, orientation: 'X' }],
+    });
+  });
+
+  test('change placement mode', () => {
+    gameboard.rotate();
+    expect(gameboard).toEqual({
+      board: testBoard,
+      missedShots: testMissedShots,
+      placeMode: 'Y',
+      fleet: [],
+      placements: [],
+    });
+  });
+
+  test('place 5 ships randomly', () => {
+    gameboard.placeShipsRandomly();
+    expect(gameboard.getFreeCells()).toBe(83);
+  });
+
+  test('prevent ship placement outside gameboard', () => {
+    expect(gameboard.isPlacementPossible(ship, 8, 8, 'X')).toBe(false);
+    expect(gameboard.isPlacementPossible(ship, 10, 10, 'X')).toBe(false);
+  });
+
+  test('prevent ship placement on taken fields', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    expect(gameboard.isPlacementPossible(ship, 1, 1, 'Y')).toBe(false);
+    expect(gameboard.isPlacementPossible(ship, 1, 2, 'X')).toBe(false);
+    expect(gameboard.isPlacementPossible(ship, 1, 3, 'Y')).toBe(false);
+  });
+
+  test('prevent ship placement in direct neighbourhood of taken fields', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    expect(gameboard.isPlacementPossible(ship, 0, 0, 'X')).toBe(false);
+    expect(gameboard.isPlacementPossible(ship, 2, 1, 'X')).toBe(false);
+    expect(gameboard.isPlacementPossible(ship, 1, 4, 'Y')).toBe(false);
+    expect(gameboard.isPlacementPossible(ship, 3, 3, 'Y')).toBe(true);
+  });
+
+  test('receive attacks', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    const hitResult = gameboard.takeHit(1, 3);
+    expect(hitResult).toEqual({ result: 'hit', ship: ship, sunk: false });
+    expect(gameboard.board[1][3]).toBe('hit');
+    expect(ship.hits).toBe(1);
+  });
+
+  test('keep track of missed shots', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    const missResult = gameboard.takeHit(1, 4);
+    expect(missResult).toEqual({ result: 'miss' });
+    expect(gameboard.board[1][4]).toBe('miss');
+    expect(gameboard.missedShots[1][4]).toBe(true);
+  });
+
+  test('return already when hitting same cell twice', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    gameboard.takeHit(1, 1);
+    const alreadyResult = gameboard.takeHit(1, 1);
+    expect(alreadyResult).toEqual({ result: 'already' });
+  });
+
+  test('return sunk true when last hit sinks a ship', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    gameboard.takeHit(1, 1);
+    gameboard.takeHit(1, 2);
+    const sunkResult = gameboard.takeHit(1, 3);
+    expect(sunkResult).toEqual({ result: 'hit', ship: ship, sunk: true });
+  });
+
+  test('is game over', () => {
+    expect(gameboard.isGameOver()).toBe(false);
+
+    gameboard.placeShip(ship, 1, 1, 'X');
+    expect(gameboard.isGameOver()).toBe(false);
+    gameboard.takeHit(1, 1);
+    gameboard.takeHit(1, 2);
+    gameboard.takeHit(1, 3);
+
+    gameboard.placeShip(new Ship(3), 5, 5, 'X');
+    gameboard.takeHit(5, 5);
+    gameboard.takeHit(5, 6);
+    gameboard.takeHit(5, 7);
+    expect(gameboard.isGameOver()).toBe(true);
+  });
+});
