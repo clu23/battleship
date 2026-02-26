@@ -26,14 +26,11 @@ class GameBoard {
       return false;
     }
 
-    if (placementMode === 'Y') {
-      for (let i = 0; i < ship.size; i++) {
-        this.board[row + i][col] = ship;
-      }
-    } else {
-      for (let i = 0; i < ship.size; i++) {
-        this.board[row][col + i] = ship;
-      }
+    const isVertical = placementMode === 'Y';
+    for (let i = 0; i < ship.size; i++) {
+      const r = isVertical ? row + i : row;
+      const c = isVertical ? col : col + i;
+      this.board[r][c] = ship;
     }
     this.fleet.push(ship);
     this.placements.push({ ship, row, col, orientation: placementMode });
@@ -57,11 +54,11 @@ class GameBoard {
 
     while (succesfulPlacements < 5) {
       const row = Math.floor(Math.random() * 10);
-      const column = Math.floor(Math.random() * 10);
+      const col = Math.floor(Math.random() * 10);
       const placementMode = 'XY'.split('')[Math.floor(Math.random() * 2)];
 
       if (
-        this.placeShip(ships[succesfulPlacements], row, column, placementMode)
+        this.placeShip(ships[succesfulPlacements], row, col, placementMode)
       ) {
         succesfulPlacements++;
       }
@@ -73,50 +70,20 @@ class GameBoard {
       return false;
     }
 
-    if (placementMode === 'X') {
-      if (col + ship.size > SIZE) return false;
-    } else {
-      if (row + ship.size > SIZE) return false;
+    const isVertical = placementMode === 'Y';
+
+    if (isVertical ? row + ship.size > SIZE : col + ship.size > SIZE) {
+      return false;
     }
 
-    if (placementMode === 'Y') {
-      for (let i = 0; i < ship.size; i++) {
-        if (this.board[row + i][col] !== 'x') return false;
-      }
-    } else {
-      for (let i = 0; i < ship.size; i++) {
-        if (this.board[row][col + i] !== 'x') return false;
-      }
-    }
-
-    if (placementMode === 'Y') {
-      for (let i = 0; i < ship.size; i++) {
-        for (let dr = -1; dr <= 1; dr++) {
-          for (let dc = -1; dc <= 1; dc++) {
-            if (
-              row + dr + i < 0 ||
-              row + dr + i >= SIZE ||
-              col + dc < 0 ||
-              col + dc >= SIZE
-            )
-              continue;
-            if (this.board[row + dr + i][col + dc] !== 'x') return false;
-          }
-        }
-      }
-    } else {
-      for (let i = 0; i < ship.size; i++) {
-        for (let dr = -1; dr <= 1; dr++) {
-          for (let dc = -1; dc <= 1; dc++) {
-            if (
-              row + dr < 0 ||
-              row + dr >= SIZE ||
-              col + dc + i < 0 ||
-              col + dc + i >= SIZE
-            )
-              continue;
-            if (this.board[row + dr][col + dc + i] !== 'x') return false;
-          }
+    for (let i = 0; i < ship.size; i++) {
+      const r = isVertical ? row + i : row;
+      const c = isVertical ? col : col + i;
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (r + dr < 0 || r + dr >= SIZE || c + dc < 0 || c + dc >= SIZE)
+            continue;
+          if (this.board[r + dr][c + dc] !== 'x') return false;
         }
       }
     }
