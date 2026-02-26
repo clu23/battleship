@@ -1,43 +1,38 @@
 class Player {
   constructor(name) {
     this.name = name;
-    this.hitCoords = [];
+    this.hitCoords = new Set();
   }
 
   setName(newName) {
     this.name = newName;
   }
 
-  attack(x, y, gameboard) {
-    if (this.alreadyHit(x, y)) {
+  attack(row, col, gameboard) {
+    if (this.alreadyHit(row, col)) {
       return;
     }
-    this.hitCoords.push([x, y]);
-    gameboard.takeHit(x, y);
+    this.hitCoords.add(`${row},${col}`);
+    gameboard.takeHit(row, col);
   }
 
   randomAttack(gameboard) {
-    if (this.hitCoords.length === 100) return;
+    if (this.hitCoords.size === 100) return;
 
-    let x = Math.floor(Math.random() * 10);
-    let y = Math.floor(Math.random() * 10);
+    let row = Math.floor(Math.random() * 10);
+    let col = Math.floor(Math.random() * 10);
 
-    while (this.alreadyHit(x, y)) {
-      x = Math.floor(Math.random() * 10);
-      y = Math.floor(Math.random() * 10);
+    while (this.alreadyHit(row, col)) {
+      row = Math.floor(Math.random() * 10);
+      col = Math.floor(Math.random() * 10);
     }
 
-    this.hitCoords.push([x, y]);
-    gameboard.takeHit(x, y);
+    this.hitCoords.add(`${row},${col}`);
+    gameboard.takeHit(row, col);
   }
 
-  alreadyHit(x, y) {
-    for (let i = 0; i < this.hitCoords.length; i++) {
-      if (this.hitCoords[i][0] === x && this.hitCoords[i][1] === y) {
-        return true;
-      }
-    }
-    return false;
+  alreadyHit(row, col) {
+    return this.hitCoords.has(`${row},${col}`);
   }
 }
 

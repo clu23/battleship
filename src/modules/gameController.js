@@ -78,7 +78,7 @@ class GameController {
       return null;
     if (this.game.player.alreadyHit(row, col)) return { result: 'already' };
 
-    this.game.player.hitCoords.push([row, col]);
+    this.game.player.hitCoords.add(`${row},${col}`);
     const result = this.game.computerBoard.takeHit(row, col);
     this.game.switchTurn();
     return result;
@@ -89,7 +89,7 @@ class GameController {
       return null;
 
     const { row, col } = this.ai.getNextMove();
-    this.game.computer.hitCoords.push([row, col]);
+    this.game.computer.hitCoords.add(`${row},${col}`);
     const result = this.game.playerBoard.takeHit(row, col);
     this.ai.recordResult(row, col, result);
     this.game.switchTurn();
@@ -103,7 +103,7 @@ class GameController {
         name: p.ship.name,
         size: p.ship.size,
         row: p.row,
-        col: p.column,
+        col: p.col,
         orientation: p.orientation,
       }));
   }

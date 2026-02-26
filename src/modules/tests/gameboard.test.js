@@ -45,7 +45,7 @@ describe('Gameboard', () => {
       missedShots: testMissedShots,
       placeMode: 'X',
       fleet: [ship],
-      placements: [{ ship, row: 1, column: 1, orientation: 'X' }],
+      placements: [{ ship, row: 1, col: 1, orientation: 'X' }],
     });
   });
 

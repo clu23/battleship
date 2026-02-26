@@ -97,14 +97,14 @@ const support = (() => {
 
   // OTHER
   function getCoordinatesFromIndex(index) {
-    const x = parseInt(index / BOARD_SIZE, 10);
-    const y = index % BOARD_SIZE;
+    const row = parseInt(index / BOARD_SIZE, 10);
+    const col = index % BOARD_SIZE;
 
-    return [x, y];
+    return { row, col };
   }
 
-  function getIndexFromCoordinates(x, y) {
-    return x * BOARD_SIZE + y;
+  function getIndexFromCoordinates({ row, col }) {
+    return row * BOARD_SIZE + col;
   }
 
   function roundNearestTenExceptZero(num) {

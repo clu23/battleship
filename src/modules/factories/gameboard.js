@@ -21,22 +21,22 @@ class GameBoard {
     }
   }
 
-  placeShip(ship, row, column, placementMode) {
-    if (!this.isPlacementPossible(ship, row, column, placementMode)) {
+  placeShip(ship, row, col, placementMode) {
+    if (!this.isPlacementPossible(ship, row, col, placementMode)) {
       return false;
     }
 
     if (placementMode === 'Y') {
       for (let i = 0; i < ship.size; i++) {
-        this.board[row + i][column] = ship;
+        this.board[row + i][col] = ship;
       }
     } else {
       for (let i = 0; i < ship.size; i++) {
-        this.board[row][column + i] = ship;
+        this.board[row][col + i] = ship;
       }
     }
     this.fleet.push(ship);
-    this.placements.push({ ship, row, column, orientation: placementMode });
+    this.placements.push({ ship, row, col, orientation: placementMode });
     return true;
   }
 
@@ -68,54 +68,54 @@ class GameBoard {
     }
   }
 
-  isPlacementPossible(ship, row, column, placementMode) {
-    if (row < 0 || row > SIZE - 1 || column < 0 || column > SIZE - 1) {
+  isPlacementPossible(ship, row, col, placementMode) {
+    if (row < 0 || row > SIZE - 1 || col < 0 || col > SIZE - 1) {
       return false;
     }
 
     if (placementMode === 'X') {
-      if (column + ship.size > SIZE) return false;
+      if (col + ship.size > SIZE) return false;
     } else {
       if (row + ship.size > SIZE) return false;
     }
 
     if (placementMode === 'Y') {
       for (let i = 0; i < ship.size; i++) {
-        if (this.board[row + i][column] !== 'x') return false;
+        if (this.board[row + i][col] !== 'x') return false;
       }
     } else {
       for (let i = 0; i < ship.size; i++) {
-        if (this.board[row][column + i] !== 'x') return false;
+        if (this.board[row][col + i] !== 'x') return false;
       }
     }
 
     if (placementMode === 'Y') {
       for (let i = 0; i < ship.size; i++) {
-        for (let x = -1; x <= 1; x++) {
-          for (let y = -1; y <= 1; y++) {
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
             if (
-              row + x + i < 0 ||
-              row + x + i >= SIZE ||
-              column + y < 0 ||
-              column + y >= SIZE
+              row + dr + i < 0 ||
+              row + dr + i >= SIZE ||
+              col + dc < 0 ||
+              col + dc >= SIZE
             )
               continue;
-            if (this.board[row + x + i][column + y] !== 'x') return false;
+            if (this.board[row + dr + i][col + dc] !== 'x') return false;
           }
         }
       }
     } else {
       for (let i = 0; i < ship.size; i++) {
-        for (let x = -1; x <= 1; x++) {
-          for (let y = -1; y <= 1; y++) {
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
             if (
-              row + x < 0 ||
-              row + x >= SIZE ||
-              column + y + i < 0 ||
-              column + y + i >= SIZE
+              row + dr < 0 ||
+              row + dr >= SIZE ||
+              col + dc + i < 0 ||
+              col + dc + i >= SIZE
             )
               continue;
-            if (this.board[row + x][column + y + i] !== 'x') return false;
+            if (this.board[row + dr][col + dc + i] !== 'x') return false;
           }
         }
       }
@@ -123,12 +123,12 @@ class GameBoard {
     return true;
   }
 
-  takeHit(row, column) {
-    if (row < 0 || row >= SIZE || column < 0 || column >= SIZE) {
+  takeHit(row, col) {
+    if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
       return { result: 'miss' };
     }
 
-    const cell = this.board[row][column];
+    const cell = this.board[row][col];
 
     if (cell === 'hit' || cell === 'miss') {
       return { result: 'already' };
@@ -136,12 +136,12 @@ class GameBoard {
 
     if (cell !== 'x') {
       cell.hit();
-      this.board[row][column] = 'hit';
+      this.board[row][col] = 'hit';
       return { result: 'hit', ship: cell, sunk: cell.isSunk() };
     }
 
-    this.board[row][column] = 'miss';
-    this.missedShots[row][column] = true;
+    this.board[row][col] = 'miss';
+    this.missedShots[row][col] = true;
     return { result: 'miss' };
   }
 

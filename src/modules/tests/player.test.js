@@ -14,7 +14,9 @@ describe('Player', () => {
   });
 
   test('create and initialize an object', () => {
-    expect(player).toEqual({ name: 'Player1', hitCoords: [] });
+    expect(player.name).toBe('Player1');
+    expect(player.hitCoords).toBeInstanceOf(Set);
+    expect(player.hitCoords.size).toBe(0);
   });
 
   test('attack', () => {

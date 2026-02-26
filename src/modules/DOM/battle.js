@@ -70,7 +70,7 @@ function renderPlayerShipOverlays() {
       p.ship.name,
       p.ship.size,
       p.row,
-      p.column,
+      p.col,
       p.orientation
     );
   });
