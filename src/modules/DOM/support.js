@@ -118,12 +118,20 @@ const support = (() => {
     nodeArray.forEach((node) => container.appendChild(node));
   }
 
+  // Returns the rendered pixel size of a grid cell.
+  // Used to position ship overlays correctly at any breakpoint.
+  function getCellSize() {
+    const cell = document.querySelector('.field');
+    return cell ? cell.offsetWidth : 36;
+  }
+
   return {
     create,
     appendAll,
     deleteAppContent,
     getHeader,
     createMap,
+    getCellSize,
     getCoordinatesFromIndex,
     getIndexFromCoordinates,
     roundNearestTenExceptZero,

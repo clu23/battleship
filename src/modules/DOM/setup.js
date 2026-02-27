@@ -6,7 +6,13 @@ import {
   removeShipFromDock,
   updateStartButton,
 } from './dock.js';
-import { onDragStart, onDragEnd, initGridListeners } from './dragDrop.js';
+import {
+  onDragStart,
+  onDragEnd,
+  onShipTap,
+  clearTouchSelection,
+  initGridListeners,
+} from './dragDrop.js';
 
 let controller = null;
 
@@ -17,7 +23,7 @@ function init(gameController) {
 
 function loadSetupContent() {
   const contentLeft = document.getElementById('content-left');
-  contentLeft.innerHTML = '';
+  contentLeft.replaceChildren();
 
   const setupContainer = document.createElement('div');
   setupContainer.className = 'setup-container';
@@ -34,7 +40,7 @@ function loadSetupContent() {
   gridSection.appendChild(map);
   setupContainer.appendChild(gridSection);
 
-  const dock = createDock(controller, onDragStart, onDragEnd);
+  const dock = createDock(controller, onDragStart, onDragEnd, onShipTap, clearTouchSelection);
   setupContainer.appendChild(dock);
 
   contentLeft.appendChild(setupContainer);

@@ -10,7 +10,7 @@ Règles du jeu : https://en.wikipedia.org/wiki/Battleship_(game)
 - Webpack 5 (bundler, entry: src/modules/main.js, output: dist/)
   - css-loader pour les CSS
   - asset/resource pour images (png, jpg) et sons (mp3) → dist/img/
-- Jest 29 (tests unitaires) avec Babel pour la conversion ESM → CJS
+- Jest 29 (tests unitaires, 66 tests) avec Babel pour la conversion ESM → CJS
 - Vanilla JS (ES6 modules, pas de framework)
 - CSS custom (pas de Tailwind/Bootstrap)
 - Police : Big Shoulders Stencil Text (Google Fonts, déjà dans index.html)
@@ -19,39 +19,51 @@ Règles du jeu : https://en.wikipedia.org/wiki/Battleship_(game)
 
 ```
 src/modules/
-├── factories/          # Logique métier pure (ZÉRO DOM ici)
-│   ├── ship.js         # Classe Ship : size, name, hits, sunk, hit(), isSunk()
-│   ├── gameboard.js    # Classe GameBoard : grille 10x10, placement, takeHit, isGameOver
-│   ├── player.js       # Classe Player : attack(), randomAttack(), alreadyHit()
-│   └── game.js         # Classe Game : instancie players + boards, gère les tours
-├── DOM/                # Tout ce qui touche au DOM
-│   ├── display.js      # Écran d'accueil, bouton play, setPlayerName
-│   ├── setup.js        # Phase placement bateaux (à compléter)
-│   └── support.js      # Helpers : createMap(), createBoard(), create(), coords utils
+├── factories/              # Logique métier pure (ZÉRO DOM ici)
+│   ├── ship.js             # Classe Ship : size, name, hits, sunk, hit(), isSunk()
+│   ├── gameboard.js        # Classe GameBoard : grille 10x10, shipMap, placement,
+│   │                       #   takeHit, getShipAt, isGameOver
+│   ├── player.js           # Classe Player : hitCoords (Set), alreadyHit()
+│   ├── ai.js               # Classe AI : easy/medium/hard, getNextMove(), recordResult()
+│   └── game.js             # Classe Game : playerBoard + computerBoard, switchTurn(), reset()
+├── gameController.js       # Orchestrateur setup→battle→over (pas de DOM)
+│                           #   playerAttack(), computerTurn(), getSunkShipPositions()
+├── DOM/                    # Tout ce qui touche au DOM
+│   ├── display.js          # Écran d'accueil, bouton Play, setPlayerName
+│   ├── setup.js            # Orchestrateur phase placement (mince) : wiring dock + dragDrop
+│   ├── dock.js             # Dock bateaux (SVGs, labels) + helpers grille joueur
+│   │                       #   getCellsForShip, renderShipOnGrid, removeShipFromDock
+│   │                       #   boutons Rotate/Random/Reset/Start Battle
+│   ├── dragDrop.js         # Drag & drop : onDragStart/End, preview vert/rouge, onDrop
+│   ├── battle.js           # Phase battle : grille ennemie, attaques, hit/miss/coulé,
+│   │                       #   radar, messages typewriter, game over overlay
+│   ├── scorePanel.js       # Score panels : liste bateaux coulés joueur + ennemi
+│   └── support.js          # Helpers génériques : createMap(), createBoard(), coords utils
 ├── utils/
-│   ├── sound.js        # Musique de fond pirates.mp3 (lancée au premier clic)
-│   └── messages.js     # Messages in-game (à corriger, retourne undefined)
-├── main.js             # Point d'entrée webpack
+│   ├── sound.js            # Musique de fond pirates.mp3 (lancée au premier clic, mutable)
+│   ├── sfx.js              # Sons SFX : splash, explosion, placementSuccess/Fail + mute
+│   └── shipSvgs.js         # SVG inline par bateau + constante CELL_SIZE
+├── main.js                 # Point d'entrée webpack
 └── tests/
     ├── ship.test.js
     ├── gameboard.test.js
-    └── player.test.js
+    ├── player.test.js
+    ├── ai.test.js
+    └── gameController.test.js
 ```
 
-## HTML existant (dist/index.html)
+## HTML (dist/index.html)
 ```
 <div id="app" class="app">
-  <div id="content-left"></div>     ← prévu pour la grille joueur
-  <div id="content-right"></div>    ← prévu pour la grille ennemie
-  <div id="welcome-screen">        ← écran d'accueil (visible au démarrage)
+  <div id="content-left"></div>     ← grille joueur (setup puis battle)
+  <div id="content-right"></div>    ← grille ennemie (battle)
+  <div id="welcome-screen">        ← écran d'accueil (masqué après clic Play)
     <p>Battleship</p>
     <input id="name" placeholder="Captain name" maxLength=20>
     <button id="play-button">Play</button>
   </div>
 </div>
 ```
-Le welcome-screen doit être masqué après clic sur Play.
-content-left et content-right accueillent les grilles via support.js createMap().
 
 ## Bateaux du jeu
 | Nom         | Taille |
@@ -63,59 +75,40 @@ content-left et content-right accueillent les grilles via support.js createMap()
 | Patrol Boat | 2      |
 
 ## Ce qui fonctionne ✅
-- Ship : création, hit(), isSunk() — testé
-- GameBoard : placement (X/Y), placement aléatoire, validation voisinage, takeHit, isGameOver — testé
-- Player : attack(), randomAttack(), alreadyHit() — testé
-- support.js : createMap(), createBoard(), createLettersSection(), createNumbersSection()
-- Écran d'accueil avec champ nom + bouton Play
-- Son de fond (pirates.mp3)
 
-## Bugs critiques — CORRIGER EN PREMIER (dans cet ordre)
+### Logique métier (factories/)
+- **Ship** : création, hit(), isSunk() — testé
+- **GameBoard** : placement horizontal/vertical, placement aléatoire, validation voisinage,
+  takeHit (retourne `{ result, ship, sunk }`), shipMap (lookup O(1) ship → coord),
+  getShipAt(row, col), isGameOver() — testé
+- **Player** : hitCoords (Set), alreadyHit() — testé
+- **AI** : 3 niveaux de difficulté — testé
+  - Easy : tirs aléatoires
+  - Medium : après un hit, cible les cases adjacentes
+  - Hard : medium + pattern en damier pour la recherche
+- **GameController** : orchestration setup → battle → over, playerAttack(),
+  computerTurn(), getSunkShipPositions(), resetGame() — testé
 
-### P0 — Bloquants
-1. **Singletons GameBoard et Game** : gameboard.js exporte `new _GameBoard()` au lieu de la classe. Il faut DEUX plateaux (joueur + ordi). Pareil pour game.js. → Exporter les classes, pas des instances. Game doit contenir playerBoard + computerBoard.
-2. **ESM vs CommonJS** : package.json a `"type": "module"` mais les tests utilisent `require()` et jest.config.js utilise `module.exports`. → Installer Babel (@babel/core, @babel/preset-env, babel-jest), créer babel.config.cjs, renommer jest.config.cjs, convertir les tests en import.
-3. **takeHit() perd la référence ship** : la cellule passe de `ship` à `'o'` après un hit. On ne sait plus quel bateau a été touché. → Utiliser 'hit'/'miss' comme marqueurs et retourner { result, ship, sunk }.
+### Interface (DOM/)
+- **Écran d'accueil** : champ nom + bouton Play
+- **Phase setup** : dock de bateaux avec SVGs, drag & drop sur la grille joueur,
+  preview vert (placement possible) / rouge (impossible), boutons Rotate / Random / Reset
+- **Phase battle** : grille ennemie cliquable, affichage bateaux du joueur,
+  couleurs hit (rouge) / miss (gris), overlay bateau coulé révélé sur grille ennemie
+- **Score panels** : liste des bateaux des deux flottes, icône ☠ quand coulé
+- **Messages** : zone typewriter animée (hit, miss, coulé, victoire, défaite)
+- **Animation radar** : faisceau circulaire sur les deux grilles pendant la bataille
+- **Game over** : overlay victoire/défaite, sélecteur de difficulté, bouton Play Again
+- **Sons** : musique de fond pirates.mp3 (lancée au premier clic), SFX splash/explosion,
+  sons de placement success/fail — mute indépendant musique et SFX
 
-### P1 — À corriger ensuite
-4. **messages.js** : l'IIFE ne retourne rien → Message === undefined.
-5. **setup.js** : utilise `Component` et `Message` qui n'existent pas / ne sont pas importés.
-6. **game.js** : `setPlayerName()` appelle `getPlayer()` au lieu de `this.getPlayer()`.
-7. **Comparaisons non strictes** : utiliser === et !== partout (pas == et !=).
+## Améliorations futures possibles
 
-## Features manquantes — À implémenter APRÈS les bugs
-
-### Phase 1 — Game controller
-- [ ] gameController.js : orchestration setup → battle → over
-- [ ] Méthodes : startGame(), playerAttack(row, col), computerTurn(), resetGame()
-- [ ] Le controller ne touche PAS au DOM, il retourne des données
-
-### Phase 2 — Rendu DOM
-- [ ] Afficher les 2 grilles (support.js createMap existe déjà)
-- [ ] data-row et data-col sur chaque cellule
-- [ ] Couleurs : bleu=eau, rouge=hit, gris=miss, noir=coulé
-- [ ] Afficher les bateaux du joueur sur sa propre grille
-- [ ] Event listeners sur la grille ennemie pour attaquer
-- [ ] Messages : "Hit !", "Destroyer coulé !", "Victoire/Défaite"
-
-### Phase 3 — Placement interactif
-- [ ] Liste des bateaux à placer
-- [ ] Clic sur grille joueur pour placer
-- [ ] Bouton rotation (X/Y)
-- [ ] Bouton Random + bouton Reset
-- [ ] Feedback visuel (vert=possible, rouge=impossible)
-
-### Phase 4 — Polish
-- [ ] Remplacer les sons de splash/explosion par de meilleurs fichiers MP3
-- [ ] IA avec 3 niveaux de difficulté :
-  - Easy : tirs aléatoires (actuel)
-  - Medium : après un hit, l'IA cible les cases adjacentes
-  - Hard : medium + l'IA privilégie un pattern en damier pour chercher les bateaux
-- [ ] Animation radar : faisceau circulaire semi-transparent qui balaie les grilles en continu
-- [ ] Score panel : liste des bateaux coulés (joueur et ennemi) affichée à côté de chaque grille, avec le nom et une icône barrée quand coulé
-- [ ] CSS complet et responsive
-- [ ] Animations hits/miss
-- [ ] Transition entre les phases (setup → battle → over)
+- **Responsive mobile** : les grilles ne s'adaptent pas aux petits écrans
+- **Déploiement GitHub Pages** : configurer webpack `publicPath` + workflow GitHub Actions
+- **Sifflement d'obus** : son de projectile entre le clic et l'impact
+- **Animations hit/miss** : explosion CSS ou sprite animé à l'impact
+- **Transitions de phase** : fondu enchaîné setup → battle → over
 
 ## Conventions de code
 - ES6 modules (import/export) partout sauf jest.config.cjs et babel.config.cjs
@@ -124,20 +117,22 @@ content-left et content-right accueillent les grilles via support.js createMap()
 - Les tests ne testent PAS le DOM (consigne Odin)
 - Nommage : camelCase variables/fonctions, PascalCase classes
 - Grille 10×10, constante SIZE = 10
-- Coordonnées : (row, column)
+- Coordonnées : `{ row, col }` — jamais `(x, y)`
 - Comparaisons strictes uniquement (=== et !==)
+- `hitCoords` est un Set, stocke les clés `"row,col"`
 
 ## Commandes
-- `npm test` — tests Jest
+- `npm test` — tests Jest (66 tests)
+- `npm run lint` — ESLint (0 warnings attendu)
 - `npx webpack` — build production → dist/
 - `npx webpack serve` — dev server
 
 ## Règles pour Claude Code
 - TOUJOURS lire le fichier concerné avant de le modifier
 - Lancer `npm test` après chaque modification de factories/ ou tests/
+- Lancer `npm run lint` après toute modification de src/modules/
 - Ne JAMAIS mettre de logique DOM dans factories/
 - Ne JAMAIS casser les tests existants sans raison documentée
-- Quand un test doit changer (ex: refactor takeHit), expliquer pourquoi
-- Proposer des tests pour toute nouvelle logique
+- Quand un test doit changer (ex: refactor), expliquer pourquoi
+- Proposer des tests pour toute nouvelle logique métier
 - Commits atomiques : un changement logique = un commit
-- Quand un bug P0/P1 est corrigé, mettre à jour ce fichier

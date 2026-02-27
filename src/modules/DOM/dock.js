@@ -1,9 +1,10 @@
-import { getSvg, CELL_SIZE } from '../utils/shipSvgs.js';
+import { getSvg } from '../utils/shipSvgs.js';
 import support from './support.js';
 import { placementSuccess } from '../utils/sfx.js';
 import battle from './battle.js';
 
 let controller = null;
+let _clearTouchSelection = null;
 
 // --- Grid helpers (shared with dragDrop via setup.js callbacks) ---
 
@@ -34,6 +35,8 @@ export function renderShipOnGrid(name, size, row, col, orientation) {
   const container = document.getElementById('field-container-player');
   if (!container) return;
 
+  const cellSize = support.getCellSize();
+
   const overlay = document.createElement('div');
   overlay.className = 'ship-overlay';
   overlay.dataset.shipName = name;
@@ -41,19 +44,20 @@ export function renderShipOnGrid(name, size, row, col, orientation) {
   const widthCells = orientation === 'X' ? size : 1;
   const heightCells = orientation === 'Y' ? size : 1;
 
-  overlay.style.left = `${col * CELL_SIZE}px`;
-  overlay.style.top = `${row * CELL_SIZE}px`;
-  overlay.style.width = `${widthCells * CELL_SIZE}px`;
-  overlay.style.height = `${heightCells * CELL_SIZE}px`;
+  overlay.style.left = `${col * cellSize}px`;
+  overlay.style.top = `${row * cellSize}px`;
+  overlay.style.width = `${widthCells * cellSize}px`;
+  overlay.style.height = `${heightCells * cellSize}px`;
 
   const svgWrap = document.createElement('div');
   svgWrap.className = 'ship-overlay-svg';
   if (orientation === 'Y') {
     svgWrap.classList.add('rotated');
-    svgWrap.style.width = `${size * CELL_SIZE}px`;
-    svgWrap.style.height = `${CELL_SIZE}px`;
+    svgWrap.style.width = `${size * cellSize}px`;
+    svgWrap.style.height = `${cellSize}px`;
   }
-  svgWrap.innerHTML = getSvg(name, size, orientation);
+  // Safe: SVG content is hardcoded in shipSvgs.js — no user input reaches getSvg()
+  svgWrap.insertAdjacentHTML('beforeend', getSvg(name, size, orientation));
   overlay.appendChild(svgWrap);
 
   container.appendChild(overlay);
@@ -85,7 +89,7 @@ export function updateStartButton() {
 
 // --- Dock item creation ---
 
-function createShipItem(ship, onDragStart, onDragEnd) {
+function createShipItem(ship, onDragStart, onDragEnd, onShipTap) {
   const item = document.createElement('div');
   item.className = 'ship-item';
   item.id = `ship-${ship.name}`;
@@ -95,7 +99,8 @@ function createShipItem(ship, onDragStart, onDragEnd) {
 
   const svgContainer = document.createElement('div');
   svgContainer.className = 'ship-svg-container';
-  svgContainer.innerHTML = getSvg(ship.name, ship.size, controller.orientation);
+  // Safe: SVG content is hardcoded in shipSvgs.js — no user input reaches getSvg()
+  svgContainer.insertAdjacentHTML('beforeend', getSvg(ship.name, ship.size, controller.orientation));
   item.appendChild(svgContainer);
 
   const label = document.createElement('span');
@@ -105,6 +110,7 @@ function createShipItem(ship, onDragStart, onDragEnd) {
 
   item.addEventListener('dragstart', onDragStart);
   item.addEventListener('dragend', onDragEnd);
+  item.addEventListener('click', onShipTap); // touch fallback: 2-tap placement
 
   return item;
 }
@@ -163,6 +169,8 @@ function onReset() {
   const ships = controller.getShipsToPlace();
   ships.forEach((ship) => restoreShipToDock(ship.name));
 
+  if (_clearTouchSelection) _clearTouchSelection();
+
   updateStartButton();
 }
 
@@ -207,8 +215,9 @@ function createButtons() {
 
 // --- Public factory ---
 
-export function createDock(ctrl, onDragStart, onDragEnd) {
+export function createDock(ctrl, onDragStart, onDragEnd, onShipTap, clearTouchSelection) {
   controller = ctrl;
+  _clearTouchSelection = clearTouchSelection ?? null;
 
   const dock = document.createElement('div');
   dock.className = 'dock';
@@ -223,7 +232,7 @@ export function createDock(ctrl, onDragStart, onDragEnd) {
   shipList.id = 'ship-list';
 
   ctrl.getShipsToPlace().forEach((ship) => {
-    shipList.appendChild(createShipItem(ship, onDragStart, onDragEnd));
+    shipList.appendChild(createShipItem(ship, onDragStart, onDragEnd, onShipTap));
   });
 
   dock.appendChild(shipList);

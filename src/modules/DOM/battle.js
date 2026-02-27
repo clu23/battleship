@@ -1,5 +1,5 @@
 import support from './support.js';
-import { getSvg, CELL_SIZE } from '../utils/shipSvgs.js';
+import { getSvg } from '../utils/shipSvgs.js';
 import { playAttackSequence } from '../utils/sfx.js';
 import {
   createPanel,
@@ -17,7 +17,7 @@ function init(gameController) {
 
 function loadBattleContent() {
   const contentLeft = document.getElementById('content-left');
-  contentLeft.innerHTML = '';
+  contentLeft.replaceChildren();
 
   const leftSection = document.createElement('div');
   leftSection.className = 'battle-section';
@@ -39,7 +39,7 @@ function loadBattleContent() {
   addRadarOverlay('field-container-player');
 
   const contentRight = document.getElementById('content-right');
-  contentRight.innerHTML = '';
+  contentRight.replaceChildren();
 
   const rightSection = document.createElement('div');
   rightSection.className = 'battle-section';
@@ -81,22 +81,25 @@ function renderShipOverlay(container, name, size, row, col, orientation) {
   overlay.className = 'ship-overlay battle-ship-overlay';
   overlay.dataset.shipName = name;
 
+  const cellSize = support.getCellSize();
+
   const widthCells = orientation === 'X' ? size : 1;
   const heightCells = orientation === 'Y' ? size : 1;
 
-  overlay.style.left = `${col * CELL_SIZE}px`;
-  overlay.style.top = `${row * CELL_SIZE}px`;
-  overlay.style.width = `${widthCells * CELL_SIZE}px`;
-  overlay.style.height = `${heightCells * CELL_SIZE}px`;
+  overlay.style.left = `${col * cellSize}px`;
+  overlay.style.top = `${row * cellSize}px`;
+  overlay.style.width = `${widthCells * cellSize}px`;
+  overlay.style.height = `${heightCells * cellSize}px`;
 
   const svgWrap = document.createElement('div');
   svgWrap.className = 'ship-overlay-svg';
   if (orientation === 'Y') {
     svgWrap.classList.add('rotated');
-    svgWrap.style.width = `${size * CELL_SIZE}px`;
-    svgWrap.style.height = `${CELL_SIZE}px`;
+    svgWrap.style.width = `${size * cellSize}px`;
+    svgWrap.style.height = `${cellSize}px`;
   }
-  svgWrap.innerHTML = getSvg(name, size, orientation);
+  // Safe: SVG content is hardcoded in shipSvgs.js — no user input reaches getSvg()
+  svgWrap.insertAdjacentHTML('beforeend', getSvg(name, size, orientation));
   overlay.appendChild(svgWrap);
 
   container.appendChild(overlay);
@@ -141,12 +144,31 @@ function initAttackListeners() {
   const container = document.getElementById('field-container-computer');
   if (!container) return;
 
+  // Desktop: click (no delay on mouse devices)
   container.addEventListener('click', onCellClick);
+
+  // Mobile: touchend fires immediately on finger lift.
+  // preventDefault() suppresses the ~300ms delayed synthetic click that follows.
+  // passive: false is required to allow preventDefault() in the touchend handler.
+  container.addEventListener('touchend', onCellTouch, { passive: false });
+}
+
+function onCellTouch(e) {
+  const cell = e.target.closest('.field');
+  if (!cell) return;
+  // Block the delayed synthetic click so the attack isn't processed twice
+  e.preventDefault();
+  processAttack(cell);
 }
 
 function onCellClick(e) {
   const cell = e.target.closest('.field');
-  if (!cell || playerTurnLocked) return;
+  if (!cell) return;
+  processAttack(cell);
+}
+
+function processAttack(cell) {
+  if (playerTurnLocked) return;
   if (controller.phase !== 'battle' || controller.game.currentTurn !== 'player')
     return;
 
@@ -160,7 +182,7 @@ function onCellClick(e) {
 
   playerTurnLocked = true;
 
-  // Visual + message immediately
+  // Visual update happens immediately, before any async sound / setTimeout
   applyCellResult(cell, result);
   updateEnemyPanel(result);
 
@@ -371,7 +393,7 @@ function showGameOverScreen(winner) {
     playerTurnLocked = false;
 
     const contentRight = document.getElementById('content-right');
-    contentRight.innerHTML = '';
+    contentRight.replaceChildren();
 
     const setup = await import('./setup.js');
     setup.default.init(controller);

@@ -31,7 +31,8 @@ function createPanel(title) {
     svgWrap.className = 'score-ship-svg';
     svgWrap.style.width = `${ship.size * MINI_CELL}px`;
     svgWrap.style.height = `${MINI_CELL}px`;
-    svgWrap.innerHTML = getSvg(ship.name, ship.size, 'X');
+    // Safe: SVG content is hardcoded in shipSvgs.js — no user input reaches getSvg()
+    svgWrap.insertAdjacentHTML('beforeend', getSvg(ship.name, ship.size, 'X'));
     li.appendChild(svgWrap);
 
     const nameSpan = document.createElement('span');
