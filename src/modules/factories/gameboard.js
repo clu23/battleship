@@ -11,6 +11,7 @@ class GameBoard {
     this.placeMode = 'X';
     this.fleet = [];
     this.placements = [];
+    this.shipMap = new Map();
   }
 
   rotate() {
@@ -31,6 +32,7 @@ class GameBoard {
       const r = isVertical ? row + i : row;
       const c = isVertical ? col : col + i;
       this.board[r][c] = ship;
+      this.shipMap.set(`${r},${c}`, ship);
     }
     this.fleet.push(ship);
     this.placements.push({ ship, row, col, orientation: placementMode });
@@ -102,9 +104,10 @@ class GameBoard {
     }
 
     if (cell !== 'x') {
-      cell.hit();
+      const ship = this.shipMap.get(`${row},${col}`);
+      ship.hit();
       this.board[row][col] = 'hit';
-      return { result: 'hit', ship: cell, sunk: cell.isSunk() };
+      return { result: 'hit', ship, sunk: ship.isSunk() };
     }
 
     this.board[row][col] = 'miss';
@@ -141,6 +144,10 @@ class GameBoard {
       }
     }
     return true;
+  }
+
+  getShipAt(row, col) {
+    return this.shipMap.get(`${row},${col}`) ?? null;
   }
 
   getFreeCells() {

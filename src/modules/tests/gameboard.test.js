@@ -32,6 +32,7 @@ describe('Gameboard', () => {
       placeMode: 'X',
       fleet: [],
       placements: [],
+      shipMap: new Map(),
     });
   });
 
@@ -46,6 +47,11 @@ describe('Gameboard', () => {
       placeMode: 'X',
       fleet: [ship],
       placements: [{ ship, row: 1, col: 1, orientation: 'X' }],
+      shipMap: new Map([
+        ['1,1', ship],
+        ['1,2', ship],
+        ['1,3', ship],
+      ]),
     });
   });
 
@@ -57,6 +63,7 @@ describe('Gameboard', () => {
       placeMode: 'Y',
       fleet: [],
       placements: [],
+      shipMap: new Map(),
     });
   });
 
@@ -130,5 +137,25 @@ describe('Gameboard', () => {
     gameboard.takeHit(5, 6);
     gameboard.takeHit(5, 7);
     expect(gameboard.isGameOver()).toBe(true);
+  });
+
+  test('getShipAt returns the ship at a given coordinate', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    expect(gameboard.getShipAt(1, 1)).toBe(ship);
+    expect(gameboard.getShipAt(1, 2)).toBe(ship);
+    expect(gameboard.getShipAt(1, 3)).toBe(ship);
+  });
+
+  test('getShipAt returns null for empty or out-of-map coordinates', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    expect(gameboard.getShipAt(0, 0)).toBeNull();
+    expect(gameboard.getShipAt(5, 5)).toBeNull();
+  });
+
+  test('getShipAt still returns the ship after a hit', () => {
+    gameboard.placeShip(ship, 1, 1, 'X');
+    gameboard.takeHit(1, 1);
+    expect(gameboard.board[1][1]).toBe('hit');
+    expect(gameboard.getShipAt(1, 1)).toBe(ship);
   });
 });
